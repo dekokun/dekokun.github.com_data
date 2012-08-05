@@ -2,7 +2,7 @@
 title: シェルスクリプトでクロージャ(的な何か)
 author: @dekokun
 date: 2012/07/24 10:43
-tags: ShellScript
+tags: ShellScript,Advent Calender
 ---
 
 ## まえがき

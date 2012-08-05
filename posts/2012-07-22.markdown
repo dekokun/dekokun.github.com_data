@@ -1,0 +1,77 @@
+---
+title: 「第2回 スタートHaskell2」行ってきた
+author: @dekokun
+date: 2012/07/22 07:28
+tags: Haskell,勉強会
+---
+
+初技術ブログ。スタイリングがイケてない部分はおいおい変えていきましょう。あれ、「つっこみいただけたらと」って書いたけどコメント欄ないんじゃね？
+
+## イベント概要
+
+* PARTAKE
+[第2回 スタートHaskell2 ](http://partake.in/events/e2f99b6b-a96f-4819-80d5-c5d61d2b427c)
+* 月に1度くらいのペースで[すごいHaskell楽しく学ぼう](http://www.amazon.co.jp/すごいHaskellたのしく学ぼう-Miran-Lipovača/dp/4274068854)をテキストに、セミナーと演習で進んでいく
+
+## 内容
+
+* 詳細については以下ブログに詳しいのでそちらにお任せします
+[makopi23のブログ 「第2回 スタートHaskell2」に参加しました](http://makopi23.blog.fc2.com/blog-date-20120722.html)
+* ちなみに私もSKIコンビネータの話にはついていけませんでした…切ない…
+
+## 演習問題発表補足
+
+* 演習問題にて、myAndやmyOrなどの実装(論理演算子(&&)や(||)を自分で実装する)について発表しました
+
+### 私の回答は以下
+
+    myNot :: Bool -> Bool
+    myNot True = False
+    myNot False = True
+    
+    myAnd :: Bool -> Bool -> Bool
+    myAnd True True = True
+    myAnd _ _ = False
+    
+    myOr :: Bool -> Bool -> Bool
+    myOr False False = False
+    myOr _ _ = True
+    
+    myXor :: Bool -> Bool -> Bool
+    myXor True False = True
+    myXor False True = True
+    myXor _ _ = False
+
+で、Twitterを見ていたらツッコミをいただいていたのです。
+
+> このmyAndは右の引数に対して正格になるから
+> myAnd False _ = False
+> myAnd _ b = b
+> のほうがいい思うのだけど、これはどうなんじゃろ #start_haskell
+[@tanakh](https://twitter.com/tanakh/status/226948910785126400)
+
+確かに、私のmyAndだと最初に両引数を評価してしまいますので遅延評価を行うHaskellの論理演算子とは挙動が違います(よね…？)
+
+### 再回答
+
+というわけで、myAndとmyOrについて私が正しいと思うように作りなおしました。
+
+こんな感じでいいのでしょうか。ツッコミいただけたらと。
+
+    myAnd :: Bool -> Bool -> Bool
+    myAnd False _ = False
+    myAnd _ b = b
+    
+    myOr :: Bool -> Bool -> Bool
+    myOr True _ = True
+    myOr _ b = b
+
+xorはどうあっても両引数を評価しないとダメという認識
+
+
+以上。
+
+## 注
+
+この日記は以前書いた別のブログの日記を移設したものです(2012/08/05)
+

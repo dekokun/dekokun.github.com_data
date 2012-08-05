@@ -1,0 +1,25 @@
+---
+title: Hakyllで作成したブログにRSS機能追加
+author: @dekokun
+date: 2012/07/29
+tags: 日記改造
+---
+
+ブログをどんどん改築していく
+
+## やりたいこと
+
+* RSS機能をつけたい
+
+## RSS機能をつけてみよう
+
+* 以下ページを参考にしてできました
+* [Hakyll.Web.Feed](http://hackage.haskell.org/packages/archive/hakyll/3.2.7.2/doc/html/Hakyll-Web-Feed.html)
+* 現在、絶賛RSSフィード生成中 http://dekokun.github.com/rss.xml
+* RSS生成ができるようになるためのdiffは以下の通り
+
+<script src="https://gist.github.com/3196214.js?file=hakyll.diff"></script>
+
+## 感想
+
+意外と簡単にできました。あとは、ブログのサイドバーに表示するようにしなくては

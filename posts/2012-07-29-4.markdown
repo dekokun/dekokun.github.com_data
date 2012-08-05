@@ -1,0 +1,31 @@
+---
+title: GitHub Pagesでのビルド失敗
+author: @dekokun
+date: 2012/07/29 15:03
+tags: 日記改造, GitHub
+---
+
+## 現象
+
+* 以下ページを作成したら"[dekokun.github.com] Page build failure"なる通知が…
+* [Hakyllで作成したブログにRSS機能追加](http://dekokun.github.com/posts/2012-07-29-3.html)
+* 「Jekyllのビルドが失敗している」とかなんとか。詳細は以下。
+
+>> github said about 3 hours ago:
+>> The page build failed with the following error:
+>> Unable to run Jekyll. Please see https://help.github.com/articles/pages-don-t-build-unable-to-run-jekyll for help.
+
+* Jekyllを走らせられなかったとのことなのだが、そもそもJekyllをビルドには使っていないのだが…(Markdownで書いたものをローカルでコンパイルし静的ファイルをコミットしてプッシュしている)
+
+
+## 調査
+
+* 上記メッセージのリンク先を読んでも、思い当たるフシはない…
+* 問題のあるコミットをリバートし、対象ファイルから1つ1つファイルを抜き出しコミットしてはプッシュしてを繰り返し、どの部分が悪いかを特定しました(リモートにプッシュしないとテストできないのが辛いところ…)
+* どうも、markdownの中に"+"で始まる行が3連続するとJekyllのビルドが失敗するらしい
+* 今回は、diffをmarkdownの中に埋め込んでいたのでそこがひっかかっていた
+
+## 対処
+
+* コミットとプッシュしまくりにつかれたので、一旦diff部分をgistに記載しそこをブログに埋め込むことで対処した
+* もっと検証したいな…

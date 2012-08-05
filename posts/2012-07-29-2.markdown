@@ -1,0 +1,49 @@
+---
+title: シンタックスハイライト追加
+author: @dekokun
+date: 2012/07/29
+tags: 日記改造
+---
+
+ブログを改築していく
+
+## やりたいこと
+
+* シンタックスハイライトがしたい
+* コードを貼り付けるとシンタックスハイライトができるようになりたいですね
+* gist貼り付けも行いたい
+
+## シンタックスハイライトその1(入力したコードをハイライト)
+
+* 以下ページを参考にしてできました
+* [tumblr+markdown+google-code-prettyでsyntax highlightingする](http://blog.sanojimaru.com/post/17991023585/tumblr-markdown-google-code-pretty-syntax)
+* pandocにおいては"```"でコード部分を囲むことでコードと認識される(preタグ、codeタグに囲まれる)
+
+```
+<!-- Code syntax highlight -->
+<link href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript " src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
+<script type="text/javascript">
+$(function(){ 
+    $('pre').css({
+        'overflow-x': 'scroll',
+        'background-color': '#f6f6f6',
+        'border': '1px dotted #ccc',
+        'padding': '0.8em'
+    });
+    $('pre code').addClass('prettyprint');
+    prettyPrint();
+});
+</script>
+```
+
+## シンタックスハイライトその2(gist埋め込み)
+
+* gistの右上の"embed"をクリックして出るスクリプトを埋め込めばOK
+* こんな感じ
+<script src="https://gist.github.com/3099398.js?file=func.sh"></script>
+
+## 感想
+
+意外と簡単にできました

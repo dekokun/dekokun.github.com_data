@@ -1,0 +1,26 @@
+/*--------------------------------------------------------
+ * Social button
+ * --------------------------------------------------------*/
+ul.social li{
+  list-style-type: none;
+  float: left !important;
+  margin-top: 15px;
+}
+
+li.facebook {
+  width: 100px;
+}
+
+li.twitter {
+  width: 100px;
+}
+
+li.hatena-bookmark {
+  width: 60px;
+}
+
+footer {
+  clear:both;
+  width:100%;
+  text-align:center;
+}

@@ -1,0 +1,147 @@
+---
+title: シェルスクリプトでMaybeモナド(その1)
+author: @dekokun
+date: 2012/08/05 13:46
+tags: ShellScript,Advent Calender
+---
+
+
+## まえがき
+
+どうも、[以前使ってたブログ](http://dekotech.tumblr.com/)は開始1ヶ月たたないうちにこのブログに移設しました[@dekokun](https://twitter.com/dekokun)です。
+
+[変態アドベントカレンダー in Summer](http://atnd.org/events/29918) 22日目となります。
+
+21日目は[@megascusさん](http://twitter.com/megascus)の["変態"を色々な文字集合で表したものをHexDampしてみる](http://d.hatena.ne.jp/megascus/20120804/1344041860)でした。
+
+## 注意書き
+
+ツッコミ歓迎(まだこのブログ、コメント欄がないですが…)
+
+## やること
+
+シェルスクリプトでモナド作成します。今回、中途半端なのですが、まぁ、このアドベントカレンダー、3周目も回ってくると思いますのでそこまでに完全版を提出できたらと。
+
+## やろうと思った経緯
+
+せっかく、前回のアドベントカレンダーの記事をシェルスクリプトにしたわけだし([シェルスクリプトでクロージャ(的な何か)](http://dekotech.tumblr.com/post/27909549041))、変態アドベントカレンダー発案者(?)のdaiksyさんはScalaを愛用している様子だったので、では関数型言語の人が好きそうなモナドをシェルスクリプトで作成してみようかしらと思いまして…
+
+あと、以前、以下のようなツイートをしていたのですが、
+<blockquote class="twitter-tweet" lang="ja"><p>「戻り値はMaybeだ」とか言っている横でシェルスクリプトの戻り値をreturnか標準出力にするかどうか考えてるのは非常にダメな感じある。</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/220723064831361025" data-datetime="2012-07-05T03:37:34+00:00">7月 5, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+そうしたら以下のような反応がありまして、
+<blockquote class="twitter-tweet" lang="ja"><p>シェルスクリプトって Maybe モナド使えますよね</p>&mdash; こば@v4(experimental)さん (@KOBA789) <a href="https://twitter.com/KOBA789/status/220723337750523904" data-datetime="2012-07-05T03:38:39+00:00">7月 5, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+というわけで、作りたいなぁと思っていたというのもあります。
+
+## Maybeモナドとは
+
+現在、かの有名な[すごいHaskellたのしく学ぼう!](http://www.amazon.co.jp/すごいHaskellたのしく学ぼう-Miran-Lipovača/dp/4274068854)でHaskellを学んでいるのですが、なんとまだモナドのところに達していません(現在アプリカティブファンクター)。
+それにも関わらず、Maybeモナドを作ろうなどとひたすら恐れ多い感じではありますが、まぁいろんなところからまさかり飛んできたら楽しいなぁと思っているところです。
+
+それはいいとして、Maybeモナドとは、失敗する可能性があることを表すMaybe型を返す関数の連鎖をうまくやってくれるように色々してくれるものです。
+詳しくはこちらを見るといいのではないでしょうか。
+http://www.sampou.org/haskell/a-a-monads/html/maybemonad.html
+
+もうちょっと具体的には、失敗する可能性のある関数の連鎖において途中で関数が失敗したらその後の関数は実施せず、関数失敗の結果を返すような機構を提供するものという理解。
+
+Haskellでの具体例は以下の通り(参考：[RubyでMabyeモナドを実装してみた。 - このブログは証明できない。](http://d.hatena.ne.jp/shunsuk/20100917/1284728273))
+
+<script src="https://gist.github.com/3261755.js?file=Maybe.hs"></script>
+
+途中で計算が失敗する場合は以下の通り
+
+<script src="https://gist.github.com/3261755.js?file=Maybe_fail.hs"></script>
+
+簡単に言うとすべての計算が成功したら"Just 計算結果"が返ってきて、途中の計算が一つでも失敗すれば"Nothing"が返って来るわけですね
+
+## 戦略
+
+シェルスクリプトには、既にMaybeモナドの>>=に似たようなものとしてパイプが存在します。しかし、パイプは、前の関数が失敗した際も次の関数を実施してくれてしまいますので、Maybeモナドの>>=とは異なりますよね。
+
+というわけで、自作します。
+
+また、そもそもシェルスクリプトでMaybe型をどう表すかという点ですが、シェルスクリプトにおいては返り値として0を返すか1を返すかでJustかNothingかを表し、標準出力の部分でJust hogeのhoge部分を得ることができます。そうすると、既存のコマンドをそのままMaybe型を返す関数として扱えるため極めて都合がよくその方向で考えていたのですが、ちょっと色々あって一旦「標準出力が文字列のNothingであればNothing値、他の値であれば、Just値」という方向でこの日記は進みます。ひどい戦略ですね。
+
+Just "Nothing"という値が返せないですしね(両方とも文字列のNothingですので)…
+
+まぁ、次回の変態アドベントカレンダーまでにちゃんとしたものを作りたいなと思いながら、今日はこのひどい戦略に沿っていきます。
+
+## 方針
+
+こんな感じで使えるようなものを目指す
+
+```
+ret monad.sh | bind "ls" | bind "cat"
+```
+
+この場合、monad.shが存在すればそのファイルのcatまで行なってくれますが、存在しなければNothingが標準出力に出力されます。
+
+Haskellのreturn, >>=がそれぞれret, パイプ+bindとなっております。bindされる関数が文字列で渡されるのが非常に辛い感じありますが、まぁシェルスクリプトだとしょうがないよね…
+
+### Nothingを標準出力で表現することにした理由
+
+上記でパイプを使うようにしたおかげで、次の関数で前の関数の返り値(returnで返って来る値)が取得できなくなり、しかたなく標準出力が文字列NothingかどうかでJustかNothingを判定することにしたのでした…誰か、パイプの前の返り値を取得する方法しりませんか…
+
+```ls hoge | echo $?```(hogeは存在しないファイル)は1ではなく0が出力されてしまうのです…```ls hoge; echo $?```と同様に1が出力されるとよかったのですが…
+
+## 実装
+
+前回の[シェルスクリプトでクロージャ(的な何か)](http://dekotech.tumblr.com/post/27909549041)とは異なり、ちゃんとbashで動きます。
+
+<script src="https://gist.github.com/3261755.js?file=monad.sh"></script>
+
+## テスト
+
+まずはMaybe型を返す(というか標準出力に出力する)関数を自作する必要があります。
+
+<script src="https://gist.github.com/3261755.js?file=maybe_func.sh"></script>
+
+### 実際に使ってみる
+
+```
+ret "hoge" | bind "maybe_add_line hogehoge" | bind "maybe_cat"
+# -> hogehoge
+ret "fuga:存在しない" | bind "maybe_ls" | bind "maybe_cat"
+# -> Nothing
+```
+
+ちゃんと動いているように見えますね
+
+### モナド則のテスト
+
+モナドには満たすべき法則があるようで、モナドを作る際はちゃんとそれを満たしてあげましょう。
+
+Haskellでモナド則を表すとこんな感じらしい
+
+<script src="https://gist.github.com/3261755.js?file=monad_law.hs"></script>
+
+今回のシェルスクリプト版ではこうなるんですかね。
+標準出力を返り値とみなしているため、標準出力を比較する形となります、
+
+<script src="https://gist.github.com/3261755.js?file=monad_law.sh"></script>
+
+#### モナド則1つ目
+
+<script src="https://gist.github.com/3261755.js?file=monad_law1.sh"></script>
+
+#### モナド則2つ目
+
+<script src="https://gist.github.com/3261755.js?file=monad_law2.sh"></script>
+
+#### モナド則3つ目
+
+<script src="https://gist.github.com/3261755.js?file=monad_law3.sh"></script>
+
+ご存知のように、Linuxにおいて0は正常ステータスを表しますので、この例においては無事全てのモナド則が満たされていることが分かるかと思います。
+
+## 感想
+
+本当にこれで正しいのかどうか全くわからんが、まぁそれっぽいのができたので比較的満足している。
+よく見ると、標準出力を出力する関数は全てMaybe型を返す関数となっているのですね。なんかおかしくないかこれ…よくわからん…
+
+## 次回への課題
+
+上のほうにも書いていますが、終了ステータスが0で標準出力がhogeの場合にJust hoge, 0以外の場合をNothingとなるようにJust,Nothingを定義することにより、Linuxが提供している全てのコマンド/関数が自動的にMaybe型を返す関数になり非常に便利ですので、今度はそういうMaybeモナドを作成したいです。
+誰か、パイプでつないだ前の関数の終了ステータスを得る方法を教えて下さい…もしくは、And演算子(&&)でつないだ前の関数の標準出力を得る方法でもいいです…

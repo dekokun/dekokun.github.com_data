@@ -24,7 +24,7 @@ tags: ShellScript,Advent Calender
 
 ## やろうと思った経緯
 
-せっかく、前回のアドベントカレンダーの記事をシェルスクリプトにしたわけだし([シェルスクリプトでクロージャ(的な何か)](http://dekotech.tumblr.com/post/27909549041))、変態アドベントカレンダー発案者(?)のdaiksyさんはScalaを愛用している様子だったので、では関数型言語の人が好きそうなモナドをシェルスクリプトで作成してみようかしらと思いまして…
+せっかく、前回のアドベントカレンダーの記事をシェルスクリプトにしたわけだし([シェルスクリプトでクロージャ(的な何か)](http://dekokun.github.com/posts/2012-07-24.html))、変態アドベントカレンダー発案者(?)のdaiksyさんはScalaを愛用している様子だったので、では関数型言語の人が好きそうなモナドをシェルスクリプトで作成してみようかしらと思いまして…
 
 あと、以前、以下のようなツイートをしていたのですが、
 <blockquote class="twitter-tweet" lang="ja"><p>「戻り値はMaybeだ」とか言っている横でシェルスクリプトの戻り値をreturnか標準出力にするかどうか考えてるのは非常にダメな感じある。</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/220723064831361025" data-datetime="2012-07-05T03:37:34+00:00">7月 5, 2012</a></blockquote>
@@ -88,7 +88,7 @@ Haskellのreturn, >>=がそれぞれret, パイプ+bindとなっております�
 
 ## 実装
 
-前回の[シェルスクリプトでクロージャ(的な何か)](http://dekotech.tumblr.com/post/27909549041)とは異なり、ちゃんとbashで動きます。
+前回の[シェルスクリプトでクロージャ(的な何か)](http://dekokun.github.com/posts/2012-07-24.html)とは異なり、ちゃんとbashで動きます。
 
 <script src="https://gist.github.com/3261755.js?file=monad.sh"></script>
 

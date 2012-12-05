@@ -1,0 +1,128 @@
+---
+title: PHP5.3にてタイプヒンティングでスカラー型が使える！？(勘違い編)
+author: @dekokun
+date: 2012/12/05 22:13
+tags: PHP
+---
+
+## まえがき
+
+どうも、最近PHPとHaskellを学んでおります。今日はPHPネタ。php5.3でスカラー型のタイプヒンティングが使えるという勘違いが発生したお話。
+
+## 発端
+
+皆さんご存知の通り、PHP5.3までは、arrayもしくはオブジェクトの場合はタイプヒントが使用できるのですが、integerやstringなどのスカラー型に対してはタイプヒントは使えません。
+
+* 参考：[PHP: タイプヒンティング - Manual](http://php.net/manual/ja/language.oop5.typehinting.php)
+
+しかし、ある日、私はPHPでタイプヒンティングについてググっていたら、下記のようなサイトを発見したのでした
+
+* [日本PHPユーザ会 掲示板: PHP 5 &raquo; プリミティブな型でもタイプヒンティングが働きます](http://bbs.php.gr.jp/topic-282.html)
+
+そこに載っていたコードはこんなです。
+
+    function myfunc(int $i) {}
+    myfunc('abc');
+
+    -> PHP Catchable fatal error:  Argument 1 passed to myfunc() must be an instance of int, string given, called in - on line 5 and defined in - on line 4
+
+    Catchable fatal error: Argument 1 passed to myfunc() must be an instance of int, string given, called in - on line 5 and defined in - on line 4
+
+ふむふむ確かにエラーメッセージを見た限りではintかどうかを判別しているっぽい。実際に自分でもコードを動かし、同じエラーメッセージが出力されるのを見て、私は以下のように完全に勘違いしてしまいました。
+
+<blockquote class="twitter-tweet" lang="ja"><p>おいPHPのタイプヒンティングってintやstringのような型では使えないんじゃなかったのか。マニュアルにそう書いてあるぞ。</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/275800555224461314" data-datetime="2012-12-04T03:15:51+00:00">12月 4, 2012</a></blockquote>
+<blockquote class="twitter-tweet" lang="ja"><p>php -r 'function myfunc(int $i) {}; myfunc("abc");' -&gt; PHP Catchable fatal error:Argument 1 passed to myfunc() must be an instance of int</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/275800590800523264" data-datetime="2012-12-04T03:15:59+00:00">12月 4, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+すみません、若干マニュアルをdisってしまいました。。しかし比較的すぐに誤りに気付き、myfuncに実際にint型のものを渡して実験してみました
+
+<blockquote class="twitter-tweet" lang="ja"><p>php -r 'function myfunc(int $i) {}; myfunc(1);'PHP Catchable fatal error:Argument 1 passed to myfunc() must be an instance of int,</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/275800746795085824" data-datetime="2012-12-04T03:16:36+00:00">12月 4, 2012</a></blockquote>
+
+あれ、intでタイプヒントしているところにintの1を渡してもエラーになっているぞ！？
+
+## 解決編
+
+上記の正確なエラーメッセージはこんな感じ
+
+> PHP Catchable fatal error:  Argument 1 passed to myfunc() must be an instance of int, integer given, called in Command line code on line 1 and defined in Command line code on line 1
+> PHP Stack trace:
+> PHP   1. {main}() Command line code:0
+> PHP   2. myfunc() Command line code:1
+
+ここが重要そうなメッセージ
+
+> Argument 1 passed to myfunc() must be an instance of int, integer given
+
+このメッセージを見ると、「なるほどタイプヒントに使うべき型名はintじゃなくてintegerだったか」という感じがしますのでintegerに変えてもう一発
+
+    function myfunc(integer $i){};
+    myfunc(1);
+
+> PHP Catchable fatal error:  Argument 1 passed to myfunc() must be an instance of Integer, integer given, called in /Users/dekokun/test.php on line 13 and defined in /Users/dekokun/test.php on line 12
+> PHP Stack trace:
+> PHP   1. {main}() /Users/dekokun/test.php:0
+> PHP   2. myfunc() /Users/dekokun/test.php:13
+
+あれ、駄目だ。エラーメッセージを読んでも、問題なさそう。だって、
+
+> must be an instance of integer, integer given
+
+「integerである必要があって、integerが与えられた」って、全然エラーじゃないじゃないですか！！！
+
+まぁ、聡明な皆さんはお気づきかと思いますが、上記エラーメッセージの最初にある_integer_はクラス名を表し、次の_integer_はスカラー型のintegerのことを表しているわけですな。わかりづらいですね。
+
+上記エラーを回避するためには、Javaのようにラッパークラスを作ってあげなくては…
+
+というわけで、全くやるきのないラッパークラスを作りました。なんの役にもたちませんね。最低限の礼儀として不変型にしておきました(intは値がコピーされますし不変型になってますよね？)ので許してください。
+
+    class Integer
+    {
+      private $i;
+      function __construct($i)
+      {
+        $this->i = intval($i);
+      }
+
+        public function __get($key)
+        {
+            return $this->$key;
+        }
+    }
+
+
+実際に使ってみた
+
+    function myfunc(integer $i){};
+    myfunc(new Integer(1));
+
+エラーは出ませんでした。めでたしめでたし。(どうでもいいですが、クラス名って大文字小文字区別しないんですね。上記実験で初めて知りました。)
+
+すべては私の勘違いだったのであった(PHPの出力するエラーがわかりづらいというのも間違いなくあると思うが)。
+
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" lang="ja"><p>勘違い恥ずかしい。</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/275800801023238144" data-datetime="2012-12-04T03:16:49+00:00">12月 4, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## あとがき
+
+PHP5.4ではintなどに対してもタイプヒントが使えますのでスカラー型のタイプヒントを行いたい方々も多いと思いますが少々お待ち下さい。
+
+ところで、関係ない話ですが、Rubyとか使ってる人たちは、タイプヒンティングがない世界でどのようにストラテジーパターンなどを実現しているのでしょうか。メソッドの存在を信じるしかないのでしょうか。
+
+<blockquote class="twitter-tweet" lang="ja"><p>ダックタイピング全盛なRubyとかでメソッドを呼び出す時って、メソッドが存在することを信じて呼ぶんだっけ。まさか毎回メソッドを呼ぶ前にメソッドの存在確認をしてから呼ぶということはあるまい。PHPにはインターフェースとタイプヒンティングがあるが。</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/275457959109218304" data-datetime="2012-12-03T04:34:29+00:00">12月 3, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" data-in-reply-to="275457959109218304" lang="ja"><p>@<a href="https://twitter.com/dekokun">dekokun</a> メソッドミッシングとかあるし、信じるしかないんじゃないんですかね。よくわかんないけど。</p>&mdash; あやぴー（２１）さん (@ayato_p) <a href="https://twitter.com/ayato_p/status/275458332981092352" data-datetime="2012-12-03T04:35:59+00:00">12月 3, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+確かに言われてみればそうかも。
+
+<blockquote class="twitter-tweet" data-in-reply-to="275457959109218304" lang="ja"><p>@<a href="https://twitter.com/dekokun">dekokun</a> railsのコード見ると、respond_to?よく見かける</p>&mdash; くろさん (@closer009) <a href="https://twitter.com/closer009/status/275472170719780865" data-datetime="2012-12-03T05:30:58+00:00">12月 3, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+やはり必要なところではメソッドの存在を確認するのか…だるいな…
+
+<blockquote class="twitter-tweet" lang="ja"><p>まぁ、タイプヒンティングがあろうが実行時エラーであることには変わらんが。</p>&mdash; でこくんさん (@dekokun) <a href="https://twitter.com/dekokun/status/275458594533687296" data-datetime="2012-12-03T04:37:01+00:00">12月 3, 2012</a></blockquote>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+以上、最近、静的型付けの言語にとりつかれ気味な私なのでした〜

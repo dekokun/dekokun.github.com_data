@@ -1,0 +1,78 @@
+---
+title: PHPにおいてstaticメソッドの呼び出し元クラスを動的に変更
+author: @dekokun
+date: 2013/01/14 20:33
+tags: PHP
+---
+
+staticメソッドを含むクラスをDIしたかったため、クラスを動的に変更してstaticメソッドを呼び出す方法を調べました。
+
+## 呼び出し方
+
+````
+<?php
+class ClassName {
+  public static function method() {
+  }
+}
+````
+
+のようなstaticメソッドの呼び出し元を動的に変更できるようクラス名から呼び出せるようにしたいですね。
+
+以下のようにすればよいです。
+
+````
+$className = 'ClassName';
+$className::method();
+````
+
+以上、めでたしめでたし。
+
+クラス名の文字列からnewできることは知っている人も多いかと思いますが、staticメソッドも同様に呼び出せるのでした。
+
+## 注意事項
+
+この注意事項は、クラス名を動的に指定する場合全般に当てはまります。staticメソッドだからどうこうというわけではありません。
+
+### 変数に格納しなくてはいけません
+
+````new 'ClassName'````とか````'ClassNeme'::method()````とかはできません。パースエラーです。
+
+### 完全修飾名を使ってください
+
+````
+namespace Hoge\Fuga
+
+class Fuga {
+  public static method() {
+  }
+}
+````
+
+のようなクラスがあった場合、
+
+````
+use Hoge\Fuga
+
+$className = 'Fuga';
+$className::method();
+````
+
+のようにエイリアスを使用したアクセスはできません。
+
+````
+$className = 'Hoge\Fuga';
+$className::method();
+````
+
+のように完全修飾名を使用しアクセスしましょう。
+
+本件について、詳しくは以下PHPマニュアル参照
+
+* [名前空間と動的言語機能](http://php.net/manual/ja/language.namespaces.dynamic.php)
+
+## まとめ
+
+文字列からnewできることを知っている人はよく知っていることばかりだったかもしれませんね。
+
+動的にクラス名を指定できるようにしてレッツエンジョイDIライフ！

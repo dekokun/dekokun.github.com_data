@@ -7,7 +7,7 @@ tags: 勉強会
 
 ## まえがき
 
-DevLOVE Conference 2012に参加してきました。
+開発(Develop)を愛する人たちの集まり、DevLOVEの100回目のイベント、[DevLOVE Conference 2012](http://devlove2012.devlove.org/)に参加してきました。
 
 いろいろ思うところありましたが、現在、明らかに体調が良くないので、一番大切だと思えることだけ。
 

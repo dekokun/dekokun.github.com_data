@@ -1,0 +1,28 @@
+---
+title: GREE Tech Talk #2 へ行って来ました
+author: @dekokun
+date: 2013/01/28 23:30
+tags: GitHub,勉強会
+---
+
+GREE Tech Talk #2に参加し、GitHub Enterprise(以下、GHEと表記)の運用についてのお話を聞いて来ました。
+開催からだいぶ日がたちましたが、感想など。
+「GHE、気軽に導入できるのかなぁ」と軽く考えておりましたが、まだその段階には至ってないようでした。
+
+## イベント概要
+
+* [GREE Tech Talk#2](http://techtalk2.labs.gree.jp/)
+* [GitHub Enterprise イベントまとめ #greetech02](http://togetter.com/li/443950)
+* [GitHub:Enterprise Casual Talk に参加した #greetech02](http://diary.sorah.jp/post/41286744473/github-enterprise-casual-talk-greetech02)
+* [GitHub Enterprise TechTalk に見る、各社の運用法](http://subtech.g.hatena.ne.jp/secondlife/20130124/1358987688)
+
+## 感想
+
+* GitHubエンタープライズの運用は現状では一筋縄ではいかないですね。
+* github.comが落ちていても諦められるかつセキュリティ的に問題なければgithub.com使ったほうがよいですね。
+* github.com使ってようが、GHE使ってようが、どちらも普通のGitサーバとくらべて格段に落ちやすいしクックパッド社やはてな社がやっているように、別のGitサーバを用意しそちらにミラーリングしてデプロイはそちらを参照するほうがいいですね。
+* gitlabは私も検証中なのですが、中身を改造しないと使いづらいです。。
+    * ドリコムさんみたいにRailsで開発している会社ならまだいいですが、その他の会社はGitHubの代わりにgitlabというのは難度が高いのではないかと…
+    * 「金があるならGHEを使え」
+* [autossh](http://www.harding.motd.ca/autossh/)便利ですね
+* 「GitHubはアイコンが出るため、視覚的に誰のコメントかなどがわかりやすくてよい」「絵文字が使えるのがコミュニケーションに役立つ」という意見は、なるほどと思いました。

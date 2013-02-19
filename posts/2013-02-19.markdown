@@ -10,7 +10,7 @@ tags: GitLab, git
 
 ## はじめに
 
-皆さん、[Amazon Linux AMIにGit + Gitolite + Gitlabをインストールして、プライベートGitHubを構築する](http://d.hatena.ne.jp/dkfj/20130212/1360676224)を読んで「なんと面倒くさいんだ」とは思いませんでしたか(実際のところ、例えば他のGitHubクローンであるところのGitoriousのほうがもっと大変らしいですが)。
+皆さん、[Amazon Linux AMIにGit + Gitolite + Gitlabをインストールして、プライベートGitHubを構築する](http://d.hatena.ne.jp/dkfj/20130212/1360676224)を読んで「GitLabの構築はなんと面倒くさいんだ」とは思いませんでしたか(実際のところ、例えば他のGitHubクローンであるところのGitoriousの構築のほうがもっと大変らしいですが)。
 Ruby製のGitLabをインストールするにはPerl製のGitolite環境が必要だなんてなんて面倒極まりないですね。
 
 しかし、会社の先輩から「GitLab 5.0からGitolite使わなくなるらしいっすよ」と聞いて[GitLab Blog](http://blog.gitlabhq.com/)を見ましたら、確かに「Yeap GitLab 5.0 will be without gitolite」(訳：GitLab 5.0からGitoliteいらなくなるよ)と書いてあるではないですか。

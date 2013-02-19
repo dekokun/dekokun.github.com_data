@@ -17,7 +17,7 @@ Ruby製のGitLabをインストールするにはPerl製のGitolite環境が必�
 
 以下、GitLab Blogの重要な部分を訳していきます。
 
-## Gitliteを使用したGitLabのこれまでの問題
+## Gitoliteを使用したGitLabのこれまでの問題
 
 これまでのGitoliteを使用したGitLabの問題は以下のとおりだそうです。
 

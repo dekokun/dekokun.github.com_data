@@ -6,6 +6,7 @@ tags: SQL,書籍
 -
 
 [デプサミ2013](http://event.shoeisha.jp/detail/1/)で[和田さんのSQLアンチパターンの講演](http://www.slideshare.net/t_wada/sql-antipatterns-devsumi-2013)を聞けなかった腹いせに[SQLアンチパターン](http://www.oreilly.co.jp/books/9784873115894/)を購入して読んでおりましたが読み終わりましたので投稿。
+
 ## だいたいの内容
 
 世のシステムのかなりの割合で使用されているとおもわれるRDBMSを使用したシステムを作る際に開発者(DBAなど含む)が陥りがちなアンチパターンをまとまっている本です。

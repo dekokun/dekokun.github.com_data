@@ -1,3 +1,15 @@
+* {
+  line-height: 1.6 !important;
+  font-size: 97%;
+}
+
+h2 {
+  background-color: #d3dfff;
+  font-size: 100%;
+  padding: 3px 5px 3px ;
+  margin: 20px 0 10px ;
+}
+
 .sidebar-module .title {
   clear:both;
   border-bottom: 1px solid #E5E5E5;

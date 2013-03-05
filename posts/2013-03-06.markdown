@@ -5,6 +5,10 @@ date: 2013/03/06 7:34
 tags: Composer, PHP, Phing, Jenkins
 ---
 
+皆さん、[Apache Ant](http://ant.apache.org/)をベースとしたPHPのプロジェクトビルドシステム、[Phing](http://www.phing.info/)を使ってますか？
+
+今日はComposerでインストールしたPhingをJenkinsから起動する方法について
+
 ## 概要
 
 Jenkinsからのビルド中に`php composer.phar install`でインストールしたPhingを使用しビルドを行う方法について。
@@ -16,7 +20,11 @@ Jenkinsからのビルド中に`php composer.phar install`でインストール�
 
 `vendor/bin/phing -logger phing.listener.DefaultLogger`
 
-めでたしめでたし。-loggerの部分を指定しないとJenkinsの「コンソール出力」上で確認できるログに、ターミナル上で色をつけるための制御文字が出力され表示が崩れます。
+-loggerの部分を指定しないとJenkinsの「コンソール出力」上で確認できるログに、ターミナル上で色をつけるための制御文字が出力され表示が崩れます。
+
+めでたしめでたし。…こんな誰でも思いつく方法ですみませんすみません＞＜
+
+結論としては、JenkinsのPhingプラグインの現在の挙動では要件を満たせないという話なのでした。
 
 ## JenkinsのPhingプラグインについて
 

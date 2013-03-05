@@ -7,7 +7,7 @@ tags: Composer, PHP, Phing, Jenkins
 
 ## 概要
 
-Jenkinsからのビルド中に`Composer install`でインストールしたPhingを使用しビルドを行う方法について。
+Jenkinsからのビルド中に`php composer.phar install`でインストールしたPhingを使用しビルドを行う方法について。
 ついでに、JenkinsのPhingプラグインのハマりどころなど(今回の解決策ではPhingプラグインを使ってないけど)
 
 ## 解答

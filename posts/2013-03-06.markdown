@@ -1,0 +1,31 @@
+---
+title: Composerからプロジェクト内にインストールしたPhingをJenkinsで実行
+author: @dekokun
+date: 2012/07/22 07:28
+tags: Composer, PHP, Phing, Jenkins
+---
+
+## 概要
+
+Jenkinsからのビルド中に`Composer install`でインストールしたPhingを使用しビルドを行う方法について。
+ついでに、JenkinsのPhingプラグインのハマりどころなど(今回の解決策ではPhingプラグインを使ってないけど)
+
+## 解答
+
+ジョブの設定の「シェルの実行」から
+
+`vendor/bin/phing -logger phing.listener.DefaultLogger`
+
+めでたしめでたし。-loggerの部分を指定しないとJenkinsの「コンソール出力」上で確認できるログに、ターミナル上で色をつけるための制御文字が出力され表示が崩れます。
+
+## JenkinsのPhingプラグインについて
+
+* 今回はプロジェクト内にビルドの一環でインストールするPhingを相対パス指定で実行したかったわけですが、Phingプラグインは絶対パスでの指定かつ、すでに存在しているPhingでないと実行してくれなかったため使うのはやめました。これはこれで妥当な挙動だとは思うので、pull requestを送るかどうかは要検討(Jenkinsのプラグインがどのようにできているかを知らないため、その勉強の意味でやってみようかしら)。
+* 今回の記事とは関係ないですが、JenkinsのPhingプラグインの設定のPHING\_HOME欄の入力は間違えやすいので注意。Phingの実行ファイルを指定するのではなく、Phingのclassesとbinディレクトリが存在するディレクトリを指定する必要があります。phingの実行ファイルを指定しても、"/hoge/fuga/phing/bin/phingが存在しません。"というエラーが出ます。ググったところ同じような現象で悩んでいる人がちらほらいるようですね。
+
+
+## あとがき
+
+どうでもいいですが、Phing使ってるPHPユーザってどれくらいいるんだろうか…
+Phingのプロジェクトを作成しながら、「2013年にもなってなぜAntのことを調べているんだ私は」という思いがひしひしとしました。
+みんな[Maven for PHP](http://www.php-maven.org/)使ってたりするのかな。

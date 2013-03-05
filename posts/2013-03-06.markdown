@@ -1,7 +1,7 @@
 ---
 title: Composerからプロジェクト内にインストールしたPhingをJenkinsで実行
 author: @dekokun
-date: 2012/07/22 07:28
+date: 2013/03/06 7:34
 tags: Composer, PHP, Phing, Jenkins
 ---
 

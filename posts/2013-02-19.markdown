@@ -24,7 +24,7 @@ Ruby製のGitLabをインストールするにはPerl製のGitolite環境が必�
 * GitLabとGitoliteで不整合起きちゃうよ
 * リポジトリ数が増えてくるとGitoliteは遅くなるよ
 * GitLabをセットアップするのに2ユーザ(GitoliteのユーザとGitLabのユーザ)が必要で面倒だよね
-* GitLabのせいでコードが複雑になって簡単にミスをするようになってるよ
+* GitoLiteのせいでコードが複雑になって簡単にミスをするようになってるよ
 * Gitoliteはリポジトリやキーの作成をサポートしてくれないよ
 
 ## 解決法

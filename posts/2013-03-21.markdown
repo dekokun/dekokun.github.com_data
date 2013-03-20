@@ -1,7 +1,7 @@
 ---
 title: ブログにSend to Kindleボタンを追加してKindleでブログを読めるようにしよう
 author: @dekokun
-date: 2013/03/21 7:30
+date: 2013/03/21 1:30
 tags: Kindle, 日記改造
 ---
 

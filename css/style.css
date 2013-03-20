@@ -38,6 +38,7 @@ ul.social li{
 }
 
 li.facebook {
+  margin-right: 10px;
   width: 100px;
 }
 
@@ -47,6 +48,10 @@ li.twitter {
 
 li.hatena-bookmark {
   width: 60px;
+}
+
+li.kindle {
+  margin-right: 12px;
 }
 
 .kindleWidget {

@@ -41,28 +41,30 @@
       fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
     </script>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/index.html">$blogTitle$</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a href="/index.html">Home</a></li>
-              <li><a href="/posts.html">Archive</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+    <header>
+      <nav class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/index.html">$blogTitle$</a>
+            <div class="nav-collapse">
+              <ul class="nav">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/posts.html">Archive</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
         </div>
-      </div>
-    </div>
+      </nav>
+    </header>
 
     <div class="container">
       <div class="row">
-        <div class="span9">
+        <article class="span9">
           $body$
           <ul class="social">
             <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="dekokun" data-lang="ja">ツイート</a></li>
@@ -70,8 +72,8 @@
             <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="true" data-font="arial"></div></li>
           </ul>
 
-        </div> <!-- /span9 -->
-        <div class="span3">
+        </article>
+        <aside class="span3">
           <div class="sidebar-module">
             <div class="title">プロフィール</div>
             <p class="id"><a href="https://twitter.com/dekokun">dekokun</a></p>
@@ -86,7 +88,7 @@
             <div class="title">RSS</div>
             <p><a href="/rss.xml"><img src="/img/rss.gif" alt="rss"></a></p>
           </div>
-        </div> <!-- /span3 -->
+        </aside> <!-- /span3 -->
       </div> <!-- /row -->
       <footer>
         <p>&copy;<script type="text/javascript">$y=2012;$ny=new Date().getFullYear();document.write($ny>$y?$y+'-'+$ny:$y);</script> <a href="https://twitter.com/dekokun">dekokun</a></p>

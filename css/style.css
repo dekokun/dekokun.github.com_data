@@ -49,6 +49,18 @@ li.hatena-bookmark {
   width: 60px;
 }
 
+.kindleWidget {
+  display:inline-block;
+  padding:3px;
+  cursor:pointer;
+  font-size:11px;
+  font-family:sans-serif;
+  border-radius:3px;
+  border:#ccc thin solid;
+  color:black;
+  background:transparent url('https://d1xnn692s7u6t6.cloudfront.net/button-gradient.png') repeat-x;background-size:contain;
+}
+
 footer {
   clear:both;
   width:100%;

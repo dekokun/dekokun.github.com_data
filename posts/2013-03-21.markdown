@@ -1,0 +1,57 @@
+---
+title: ブログにSend to Kindleボタンを追加してKindleでブログを読めるようにしよう
+author: @dekokun
+date: 2013/03/21 7:30
+tags: Kindle, 日記改造
+---
+
+[Amazonが[Send to Kindle]（コンテンツをKindleへ送る）ボタンをローンチ](http://jp.techcrunch.com/2013/03/20/20130319amazon-launches-send-to-kindle-button-for-web-developers-wordpress-blogs/)を読み、昨日あたりからブログ記事にSend to Kindleボタンを置けるようになったことがわかりましたので、早速ブログにボタンをつけてみました。
+
+これまでも、[Chrome拡張](http://www.amazon.com/gp/sendtokindle/chrome)や[Firefox拡張](http://www.amazon.com/gp/sendtokindle/firefox)、[E-mailを使用した方法](http://www.amazon.com/gp/sendtokindle/email)などでWebサイトをKindleに送ることはできていたようですが(全く知らなかった)、ブログ側に専用のボタンを設置することで、ユーザが頑張らなくても簡単にKindleにブログ記事を送ることができるようになるわけです。
+
+
+## 方法
+
+今回は、WordPress以外の場合の説明をします。
+WordPress上のブログにSend to Kindleボタンを作成する場合は専用のプラグインがあるようですので、どうぞ
+
+* [Send to Kindle](http://wordpress.org/extend/plugins/send-to-kindle/)
+
+1. [The Send to Kindle Button for Websites](http://www.amazon.com/gp/sendtokindle/developers/button)に行く
+    * "Choose your button style"で見た目を選択
+    * "How do you mark the title, author, and publication date on your pages?"の部分は、facebookボタンなどでOGP設定を行なっている場合は"Open Graph"を選択し、それ以外の場合は"Custom CSS Selectors"を選択しタイトルや作者の名前を、CSSセレクタ形式で選択
+        * 私の場合はすでにOGP設定を行なっていたため"Open Graph"で
+    * "How do you mark the main body of content on your pages?"の部分は、実際に配信したい部分をCSSセレクタ形式で選択
+        * 私の場合はarticleタグ内を全て配信したかったため、"article"で
+    * "Do you sell a periodicals subscription on Kindle?"は"No"で
+        * Kindle Storeで定期刊行物を販売している際にYesを選択すると、定期刊行物にブログ記事を含ませることができるっぽい。[The Washington Post for Kindle (Ad-Free)](http://www.amazon.com/dp/B000HC48T0)とかがそうしているそうな。
+2. "Generate widget code"ボタンを押下
+3. 生成されたコードを自分のブログに貼り付ける
+    * "Step 1"のJavaScriptは、bodyタグの最後に貼り付ける
+    * "Step 2"のHTMLは、"Send to Kindle"ボタンを置きたい場所に貼り付ける
+
+完了。めでたしめでたし。
+
+
+## 注意点
+
+* [対応しているKindleクライアント](https://www.amazon.com/gp/help/customer/display.html?nodeId=200767340#usb)に対してしか送ることができません
+* amazon.comのアカウントに紐付いたKindleクライアントにしか送ることができません(amazon.co.jpのアカウントには送れません)
+    * [アカウント統合](http://www.amazon.co.jp/gp/help/customer/display.html/?nodeId=201049300)していれば可能なようですが、実際どれくらいの人がアカウント統合しているのだろうか…
+    * これじゃ日本のブログに「Send to Kindle」ボタンをつけても、恩恵に預かれる読者はほとんどいないのでは、というかただの害悪である場合のほうが多いかもしれないですね
+        * 読者A「おっ、[Send to Kindle]だって。Kindleに送れるのか！ポチッとな」…「あれ、対応デバイスが無いって出てる。死ね」みたいな
+* amazon.comのアカウントに紐づく対応クライアントがない場合は、以下のようなメッセージが表示される
+
+> You don't have a supported Kindle device or reading app.
+> For a list of supported devices, click [here](https://www.amazon.com/gp/help/customer/display.html?nodeId=200767340#usb).
+
+## 何が便利なんですか
+
+["あとで読むサービスに近い"](https://twitter.com/imarikaratsu/statuses/314263521561047040)とおっしゃっているかたがいて、確かにそうかもしれないなと思いました。
+
+Chrome拡張とかをいれなくてもそれができるようになったってのは嬉しいんじゃないですかね。
+
+他に、どんな嬉しいことがあるのかな。誰か教えてください。
+
+以上、めでたしめでたし
+

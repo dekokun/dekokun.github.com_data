@@ -45,7 +45,7 @@ WordPress上のブログにSend to Kindleボタンを作成する場合は専用
     * ちなみに、私はamazon.comのアカウントでSend to Kindleボタンのテストを行いましたが、統合したアカウントではテストをおこなっていないため本当にアカウント統合でいけるのかどうかは知りません。誰か教えてください。
     * これじゃ日本のブログに「Send to Kindle」ボタンをつけても恩恵にあずかることのできる読者はほとんどいないのでは、というかただの害悪である場合のほうが多いかもしれないですね
         * 読者A「おっ、[Send to Kindle]だって。Kindleに送れるのか！ポチッとな」…「あれ、対応デバイスが無いって出てる。死ね」みたいな
-* amazon.comのアカウントに紐づく対応クライアントがない場合は、以下のようなメッセージが表示される
+* amazon.comのアカウントに紐づく対応クライアントがない場合は、Send to Kindleボタンを押した際に以下のようなメッセージが表示される
 
 > You don't have a supported Kindle device or reading app.
 > For a list of supported devices, click [here](https://www.amazon.com/gp/help/customer/display.html?nodeId=200767340#usb).

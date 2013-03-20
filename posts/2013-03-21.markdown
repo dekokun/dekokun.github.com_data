@@ -42,6 +42,7 @@ WordPress上のブログにSend to Kindleボタンを作成する場合は専用
 * [対応しているKindleクライアント](https://www.amazon.com/gp/help/customer/display.html?nodeId=200767340#usb)に対してしか送ることができません
 * amazon.comのアカウントに紐付いたKindleクライアントにしか送ることができません(amazon.co.jpのアカウントには送れません)
     * [アカウント統合](http://www.amazon.co.jp/gp/help/customer/display.html/?nodeId=201049300)していれば可能なようですが、実際どれくらいの人がアカウント統合しているのだろうか…
+    * ちなみに、私はamazon.comのアカウントでSend to Kindleボタンのテストを行いましたが、統合したアカウントではテストをおこなっていないため本当にアカウント統合でいけるのかどうかは知りません。誰か教えてください。
     * これじゃ日本のブログに「Send to Kindle」ボタンをつけても恩恵にあずかることのできる読者はほとんどいないのでは、というかただの害悪である場合のほうが多いかもしれないですね
         * 読者A「おっ、[Send to Kindle]だって。Kindleに送れるのか！ポチッとな」…「あれ、対応デバイスが無いって出てる。死ね」みたいな
 * amazon.comのアカウントに紐づく対応クライアントがない場合は、以下のようなメッセージが表示される

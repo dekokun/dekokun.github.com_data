@@ -1,0 +1,267 @@
+---
+title: Python製デプロイツール Fabricを初めて使う際に役立つTips
+author: @dekokun
+date: 2013/04/07 19:30
+tags: Python, Fabric, デプロイツール
+---
+
+「次のプロダクトはシンプルなデプロイツールだと噂の[Cinnamon](http://d.hatena.ne.jp/naoya/20130118/1358477523)でも使ってみるかー」と言っていたら、「Cinnamonは使ってるユーザ数が少なそうだし同様のことが行えるFabricのほうがいいんじゃないですかね。」というツッコミをいただき、今回はPerlのプロジェクトでもないためFabricを使用することにしました。
+
+初めて触るFabric、やはり初学者にはいろいろとよくわからない部分があったため、はまって解決したことや便利なTipsなどをつらつらと列挙していきます。
+
+なお、以下情報はPython2.7及びFabric2.6でのみ検証しています。
+
+以下、Tipsです。
+
+## 日本人がはじめの一歩を踏み出すには
+
+以下を参考にするといいでしょう。バージョンが古いですが、特に問題ないかと。私もpipでインストールしました。
+
+* [Python School 1.5.0 documentation](http://skitazaki.github.io/python-school-ja/cmdline/cmdline-6.html)
+
+英語でもいいなら、以下本家のドキュメントがいいんじゃないですかね。
+
+* [Overview and Tutorial](http://docs.fabfile.org/en/1.6/tutorial.html)
+
+## run関数を呼んだ際、リモートサーバ側では実際にどのように実行されているんですか
+
+わざと失敗してみるとわかりますが、以下のようにbash -l -cで実行しています。
+
+    from fabric.api import run
+    
+    def exittest():
+      run('exit 1')
+    
+    ## Requested: exit 1
+    ## Executed: /bin/bash -l -c "exit 1"
+
+
+## SCPがしたい
+
+デプロイの際など、ローカルのファイルをリモートに送りたい場合などありますよね。local('scp hoge fuga@host:...')などしてもいいですが、もっといい方法があります。
+
+### 解決策
+
+put関数を使いましょう。
+
+    from fabric.api import put
+    
+    def scp():
+      put('local path', 'remote path')
+
+local pathの部分はワイルドカードも使えますよ。もちろんディレクトリも送ることができます。
+
+* [fabric.operations.put](http://docs.fabfile.org/en/1.4.3/api/core/operations.html#fabric.operations.put)
+
+## 実行される際の環境変数を変更したい
+
+ローカル実行、リモート実行共に、環境変数を規定して何かを実行したい場合がありますよね。
+
+### 解決策
+
+shell_env関数を使いましょう
+
+    from fabric.api import local, shell_env, run
+    
+    def envtest():
+      with shell_env(HOGE='fuga'):
+        local('env')
+        run('env')
+
+上記のように、同じ環境変数をローカルとリモート両方で使用できます。
+
+上記だと、export HOGE="fuga"が呼ばれた後に後続のコマンドが実行されます。
+
+## どこかにcdしてコマンドを実行させたい
+
+デプロイの際にcd repo_path && git fetch && git checkoutみたいなことしたいこともありますよね
+
+### 解決策
+
+リモートでcdする場合はcd関数、ローカルでcdする場合はlcd関数を実行しましょう。
+
+with構文を抜けると、cd, lcdの効果はなくなります。
+
+    from fabric.api import run, local, cd, lcd
+    
+    def cdtest():
+      local('mkdir -p hoge')
+      run('mkdir -p hoge')
+      with cd('hoge'):
+        local('pwd')
+        run('pwd')
+    
+      with lcd('hoge'):
+        local('pwd')
+        run('pwd')
+
+
+## developmentの際とproductionの際にデプロイ先を分けたい
+
+まぁ、デプロイツールであれば当然の要求ですよね
+
+### 解決策
+
+方法がいくつか考えられます。タスクを分ける方法と、タスクのなかでホストを定義する方法。(その他もろもろ)
+
+    from fabric.api import env
+
+    # タスクを分ける方法
+    def dev_deploy():
+      deploy('devserver')
+    
+    def production():
+      deploy('prodserver')
+    
+    def deploy(server):
+      env.hosts = [server]
+      ...
+
+    # タスクのなかでホストを定義
+    # $ fab develop deploy などとして使う
+    def develop():
+      env.user = 'devuser'
+      env.hosts = ['dev']
+    
+    def production():
+      env.user = 'produser'
+      env.hosts = ['prod.server.com', 'prod2.server.com']
+    
+    def deploy():
+      ...
+
+とにかく、なんらかの方法でenv.hostsやenv.userを書き換えればよいです。
+
+他にもfab deploy:devserver など、コマンドラインでデプロイ先をタスクに直接与える方法や、デフォルトのfab -Hでデプロイ先を指定する方法など、いろいろ考えられますね。
+
+私は、fabfileでデプロイ先をバージョン管理したいかつ、一番柔軟な方法を取りたいという思いがあり、上記の「タスクのなかでホストを定義」を採用しています。
+
+## ロールを分けたい
+
+production環境、develop環境でも、Webサーバやツールサーバなど、複数のロールによってデプロイ先を切り替えるなど行いたい欲求は確実に出てきます。Capistranoのロールのようなものが欲しいですよね。
+
+### 解決策
+
+roledefsでロールを定義し、デコレータを使用してタスクにロールを紐付けることができます。
+
+    from fabric.api import env
+    from fabric.decorators import roles
+    
+    def production(user='vagrant'):
+        env.user = user
+        env.roledefs.update({
+            'webservers': ['host1', 'host2'],
+            'toolservers': ['host3'],
+            })
+    
+    def develop(user='vagrant'):
+        env.user = user
+        env.roledefs.update({
+            'webservers': ['host4'],
+            'toolservers': ['host2'],
+            })
+    
+    @roles('sebserver')
+    def webserver_deploy
+        ...
+    
+    # $ fab develop webserver_deploy とすれば、develop環境のWebサーバに対して対象のタスクが実行されます。
+
+## fabfileに関数を作成したいけどタスクとして実行できないようにしたい
+
+fabファイルの中で普通に関数を定義するとタスクとして実行可能になってしまい気持ちが悪いので、補助用の関数はタスクとしてコマンドラインから実行できないようにしたいですね。
+
+### 解決策
+
+サブタスクにしたい関数名の初めにアンダーバーを入れろ。以上(疲れてきた)
+
+## 引数指定したい
+
+タスクに引数を渡したい場合がありますよね。
+
+### 解決策
+
+$ fab hoge:fuga
+
+でhoge関数の第一引数に'fuga'を渡すことができます。
+
+$ fab hello:name=Jeff
+とかね。最初に提示したチュートリアルに載っているから詳しくはそっち参考にしてね。
+
+## ssh_configの設定を使用したい
+
+何もせずに.ssh/configの設定を使用しようとしても、.ssh/configを使用せずにsshで接続しようとしてしまいます。
+
+### 解決策
+
+以下1行を書いておけば、.ssh/configを使用してsshで接続してくれます。
+
+    env.use_ssh_config = True
+
+## タスク内でホスト名を取得
+
+なんでホスト名を取得したくなったのか忘れたが、とにかく取得したいと思ったことがあったのです。
+
+### 解決策
+
+env.hostを使えば良い感じです
+
+以下で、タスクが各ホストに対して順番に実行されている様子が観察できます。
+
+    env.hosts = ['host1', 'host2']
+    
+    def hosttest():
+      print env.host
+
+## タスク内で各ホストに対して並列実行したい
+
+ホストが増えたら並列実行できないとお話になりませんよね。
+
+### 解決策
+
+$ fab -Pで、全てのタスクを並列実行にすることが可能です。
+
+タスク毎に分ける場合は、以下のようにデコレータを使用してください。
+
+    from fabric.api import env
+    from fabric.decorators import parallel
+    
+    @parallel
+    def sleeptest():
+      run('sleep 3')
+
+## 全タスクから見える変数及び定数を定義したい
+
+まぁ、したいことありますよね。リポジトリのURLを定義したり、途中で状態を変えたり
+
+### 解決策
+
+envに値をセットすることでどこからでも取り出すことが可能になります。
+
+ここ、本当にこれでいいんですかね。Fabric使いの人からのツッコミをお待ちしております。
+
+    from fabric.api import env
+    
+    env.test = 'hoge'
+    
+    def envtest():
+      print env.test
+      env.test = 'fuga'
+    
+    def envtest2():
+      print env.test
+    
+
+## 感想
+
+Fabric、シンプルでいいですね。やりたいことが簡単にできます。
+最近、Pythonを書く機会がじわじわと増えてきており、今年はへび年だしそういうものなのかなと感じております。
+私自体初心者であるため、もしかしたらもっといい方法があるかもしれません。ツッコミお願い致します。
+
+## その他雑感
+
+このブログが運用されているGithub Pagesのドメインがgithub.comからgithub.ioに変わっちゃいましたね。
+はてブとかtwitterの言及数とかfacebookのいいね数とかが全部0になっちゃいましたね。引き継げないんですかね。
+
+Pythonつながりの話ですが、[Ansible](http://ansible.cc/)という構成管理ツールが少し話題になっていましたね。私はChefでknife-soloを使ってリモートからchef-solo実行みたいなことしかしていなかったため、Ansibleでもいいんじゃないかと思いました。
+あとは、Chefの豊富なresourceとrecipe達に太刀打ちできるかですかね。使ってみなくては。

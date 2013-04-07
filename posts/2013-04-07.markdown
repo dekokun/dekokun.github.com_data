@@ -251,6 +251,11 @@ envに値をセットすることでどこからでも取り出すことが可�
     def envtest2():
       print env.test
     
+   # $ fab envtest envtest2
+   # hoge
+   # fuga
+
+   # Done.
 
 ## 感想
 

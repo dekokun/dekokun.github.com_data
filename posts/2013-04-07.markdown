@@ -161,7 +161,7 @@ roledefsでロールを定義し、デコレータを使用してタスクにロ
             'toolservers': ['host2'],
             })
     
-    @roles('sebserver')
+    @roles('webserver')
     def webserver_deploy
         ...
     

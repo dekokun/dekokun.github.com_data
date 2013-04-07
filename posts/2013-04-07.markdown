@@ -186,7 +186,7 @@ $ fab hoge:fuga
 でhoge関数の第一引数に'fuga'を渡すことができます。
 
 $ fab hello:name=Jeff
-とかね。最初に提示したチュートリアルに載っているから詳しくはそっち参考にしてね。
+とかね。最初に提示したチュートリアル([Overview and Tutorial](http://docs.fabfile.org/en/1.6/tutorial.html))に載っているから詳しくはそっち参考にしてね。
 
 ## ssh_configの設定を使用したい
 

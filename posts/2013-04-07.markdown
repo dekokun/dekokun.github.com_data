@@ -192,7 +192,7 @@ $ fab hello:name=Jeff
 
 ## ssh_configの設定を使用したい
 
-何もせずに.ssh/configの設定を使用しようとしても、.ssh/configを使用せずにsshで接続しようとしてしまいます。
+何もせずに.ssh/configの設定を使用しようとしても、.ssh/configを使用せずにsshで接続しようとしてしまいます。`Fatal error: Name lookup failed for server1`とかエラーメッセージが出たりしますよね。
 
 ### 解決策
 

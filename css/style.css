@@ -10,11 +10,22 @@ h2 {
   margin: 20px 0 10px ;
 }
 
-.sidebar-module .title {
+.hatena-moduletitle {
   clear:both;
   border-bottom: 1px solid #E5E5E5;
   margin: 0 0 10px;
   padding: 0 0 3px;
+}
+
+.hatena-moduletitle .title, .sidebar-module .title {
+  clear:both;
+  border-bottom: 1px solid #E5E5E5;
+  margin: 0 0 10px;
+  padding: 0 0 3px;
+}
+
+.hatena-modulebody li {
+  list-style-type: none;
 }
 
 .sidebar-module .id {

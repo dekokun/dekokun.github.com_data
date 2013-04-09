@@ -5,6 +5,8 @@ date: 2013/04/07 19:30
 tags: Python, Fabric, デプロイツール
 ---
 
+2013/04/09 追記 意外と反響があるようなので、Tips追加しました。
+
 「次のプロダクトはシンプルなデプロイツールだと噂の[Cinnamon](http://d.hatena.ne.jp/naoya/20130118/1358477523)でも使ってみるかー」と言っていたら、「Cinnamonは使ってるユーザ数が少なそうだし同様のことが行えるFabricのほうがいいんじゃないですかね。」というツッコミをいただき、今回はPerlのプロジェクトでもないためFabricを使用することにしました。
 
 初めて触るFabric、やはり初学者にはいろいろとよくわからない部分があったため、はまって解決したことや便利なTipsなどをつらつらと列挙していきます。
@@ -256,6 +258,79 @@ envに値をセットすることでどこからでも取り出すことが可�
     # fuga
     
     # Done.
+
+-----
+
+以下、2013/04/09追記
+
+-----
+
+## コンフィグファイルを使いたい
+
+コンフィグファイルに設定を記載し、その情報を使ってデプロイをしたいことってありますよね。
+
+### 解決策
+
+.ini形式のファイルをfab -cオプションで指定することが可能です。-cオプションがない場合は$HOME/.fabricrcを読みにいきます。文字列しか指定できないため、配列で指定しなくてはいけないenv.hostsはコンフィグファイルに書けないのであまりうれしさはないけども。
+
+fabricrc:
+
+    user = vagrant
+    hoge = fuga
+
+fabfile.py:
+
+    from fabric.api import env, run
+    
+    env.hosts = ['server1', 'server2']
+    
+    def deploy():
+      run('deploy.sh')
+
+    def printenv():
+      print(env.hoge)
+
+    # $ fab -c fabricrc deploy
+    # 上記で、fabricrcに指定したvagrantユーザに対してrunが走る
+    # $ fab -c fabricrc printenv
+    # 上記で'fuga'と出力される
+
+## env.hostsを別ファイルに切り出したい
+
+fabricをデプロイツールとして見た際に、やはりデプロイ先は別ファイルとして切り出したい感じありますよね。productionとdevelopそれぞれに1ファイルずつあるとわかりやすいのではないかと。
+
+### 解決策
+
+力技で行きます。ファイルを行で分割して配列に格納します。本当にこの方法しかないのかな…過去にgithubのfabricのリポジトリ上で「env.hostsは設定ファイルで指定したい」「yamlがいいんじゃないか」と議論していたのですが、特にその辺りの成果は出ていないようです。
+
+以下でも力技の解決策で人々が頑張っている姿がみうけられます。
+
+* [Setting fabric hosts list from an external hosts file](http://stackoverflow.com/questions/10391377/setting-fabric-hosts-list-from-an-external-hosts-file)
+
+production.conf:
+
+    server1
+    server2
+
+development.conf
+
+    server3
+
+fabfile.py:
+
+    from fabric.api import env, run
+    
+    def product():
+      env.user = 'pro_user'
+      env.hosts = open('production.conf', 'r').readlines()
+    
+    def develop():
+      env.user = 'dev_user'
+      env.hosts = open('development.conf', 'r').readlines()
+    
+    def deploy():
+      run('./deploy.sh')
+    # fab product deploy でserver1, server2にデプロイ
 
 ## 感想
 

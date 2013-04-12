@@ -42,6 +42,8 @@ tags: Python, Fabric, デプロイツール
 
 デプロイの際など、ローカルのファイルをリモートに送りたい場合などありますよね。local('scp hoge fuga@host:...')などしてもいいですが、もっといい方法があります。
 
+(2013/04/13 追記) コメントいただきました。fabricのputはSCPではなくSFTPなのですね(参照：fabric/operations.py 及び fabric/sftp.py)。ありがとうございます。
+
 ### 解決策
 
 put関数を使いましょう。

@@ -27,6 +27,15 @@ main = hakyllWith config $ do
                 >>> applyTemplateCompiler "templates/default.html"
                 >>> relativizeUrlsCompiler
 
+    -- about me
+    _ <- ($)
+        match "aboutme.md" $ do
+            route $ setExtension ".html"
+            compile $ pageCompiler
+                >>> arr (setField "blogTitle" blogTitle)
+                >>> applyTemplateCompiler "templates/default.html"
+                >>> relativizeUrlsCompiler
+
     -- Render posts list
     match "posts.html" $ route idRoute
     _ <- ($)

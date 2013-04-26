@@ -116,7 +116,7 @@ makeTagList tag posts =
 feedConfiguration :: FeedConfiguration
 feedConfiguration = FeedConfiguration
     { feedTitle       = blogTitle
-    , feedDescription = "机上日記のRSSフィード"
+    , feedDescription = blogTitle ++ "のRSSフィード"
     , feedAuthorName  = "dekokun"
     , feedRoot  = "http://dekokun.github.com"
     , feedAuthorEmail = "shintaro.kurachi@gmail.com"

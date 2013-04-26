@@ -123,4 +123,4 @@ feedConfiguration = FeedConfiguration
     }
 
 blogTitle :: String
-blogTitle = "机上日記"
+blogTitle = "でこてっくろぐ"

@@ -48,6 +48,12 @@ ul.social li{
   margin-top: 15px;
 }
 
+ul.social:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
 li.facebook {
   margin-right: 10px;
   width: 100px;
@@ -78,7 +84,6 @@ li.kindle {
 }
 
 footer {
-  clear:both;
   width:100%;
   text-align:center;
 }

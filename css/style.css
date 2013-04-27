@@ -44,7 +44,7 @@ h2 {
  * --------------------------------------------------------*/
 ul.social li{
   list-style-type: none;
-  float: left !important;
+  float: left;
   margin-top: 15px;
 }
 

@@ -6,12 +6,13 @@ tags: Python, Fabric, デプロイツール
 ---
 
 2013/04/09 追記 意外と反響があるようなので、Tips追加しました。
+2013/05/10 追記 並列実行について調べたのでついでに追記
 
 「次のプロダクトはシンプルなデプロイツールだと噂の[Cinnamon](http://d.hatena.ne.jp/naoya/20130118/1358477523)でも使ってみるかー」と言っていたら、「Cinnamonは使ってるユーザ数が少なそうだし同様のことが行えるFabricのほうがいいんじゃないですかね。」というツッコミをいただき、今回はPerlのプロジェクトでもないためFabricを使用することにしました。
 
 初めて触るFabric、やはり初学者にはいろいろとよくわからない部分があったため、はまって解決したことや便利なTipsなどをつらつらと列挙していきます。
 
-なお、以下情報はPython2.7及びFabric2.6でのみ検証しています。
+なお、以下情報はPython2.7及びFabric1.6でのみ検証しています。
 
 以下、Tipsです。
 
@@ -227,10 +228,25 @@ $ fab -Pで、全てのタスクの中を並列実行にすることが可能で
 
 タスク毎に並列実行か直列実行かを指定したい場合は、以下のようにデコレータを使用してください。
 
-    from fabric.api import env
+    from fabric.api import env, run
     from fabric.decorators import parallel
     
     @parallel
+    def sleeptest():
+      run('sleep 3')
+
+## タスク毎に同時並列最大数を規定したい
+
+一気に全部並列実行はやばいけどチマチマserial実行は時間がかかりすぎるよねって時。capistranoのmax_hostで設定するのと同じようなことをしたいことってありますよね。
+
+### 解決策
+
+上記のparallelデコレータにpool_size=で最大同時実行数を指定しましょう
+
+    from fabric.api import env, run
+    from fabric.decorators import parallel
+
+    @parallel(pool_size=2)
     def sleeptest():
       run('sleep 3')
 

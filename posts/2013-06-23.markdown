@@ -1,0 +1,58 @@
+---
+title: httpdでconfigtestが成功しても起動できない時の切なさ
+author: @dekokun
+date: 2013/06/23 23:20
+tags: httpd
+---
+
+今回は技術的に大したネタではないですが切なさが募ったので投稿
+
+Apache, configtestではステータスコード0が返ってきているのに再起動が失敗すると切ないですよね。
+
+デプロイの際にcapistranoでhttpd.confを書き換えてconfigtestを行い成功したらhttpdの再起動を行なっていたのですが、configtestはステータスコード0で成功したのにhttpdの起動が失敗してヒヤリとしました。
+
+capistranoで並列数を絞ってhttpdを再起動していたため影響は全台には及ばなかったのでそんなに問題はないですけども。
+
+少し試してみたら、いろいろなパターンでhttpdが起動したりしなかったりconfigtestが成功したりしなかったりしますね。
+
+例1： ログディレクトリが存在しない場合
+
+    # service httpd configtest; echo $?; service httpd restart
+    Syntax OK
+    0
+    Stopping httpd:                                            [  OK  ]
+    Starting httpd:                                            [FAILED]
+
+configtestは成功したにもかかわらず死亡
+
+
+例2：ドキュメントルートが存在しない場合
+
+
+    # service httpd configtest; echo $?; service httpd restart
+    Warning: DocumentRoot [/var/www/htmls] does not exist
+    Syntax OK
+    0
+    Stopping httpd:                                            [  OK  ]
+    Starting httpd: Warning: DocumentRoot [/var/www/htmls] does not exist
+                                                           [  OK  ]
+
+ドキュメントルートが存在しない場合はconfigtestの際にWarningは出してくれるがステータスは成功でhttpdは起動しますね。この挙動はどうなんだろうね。
+
+例3:ドキュメントルートにファイルを指定したりドキュメントルートにしたディレクトリの親ディレクトリがそもそも存在しなかった場合
+
+    # service httpd configtest; echo $?; service httpd restart
+    Syntax error on line 292 of /etc/httpd/conf/httpd.conf:
+    DocumentRoot must be a directory
+    1
+    Stopping httpd:                                            [  OK  ]
+    Starting httpd: Syntax error on line 292 of /etc/httpd/conf/httpd.conf:
+    DocumentRoot must be a directory
+                                                               [FAILED]
+
+configtestで失敗し、もちろん起動もしない。まぁ、この挙動は自然ですね。
+
+(このあたり、詳しくはhttpdのソースのserver/core.c内のset_document_rootあたりを読むといいと思いますよ多分)
+このページとか参考にしながら。
+[ディレクティブの処理と設定値の利用 (apache module 開発事初め その3) ](http://dsas.blog.klab.org/archives/50596409.html#s28)
+

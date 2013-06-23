@@ -1,0 +1,40 @@
+---
+title: Chef Server 11系にてadminのパスワードがわからなくなった場合の対処法
+author: @dekokun
+date: 2013/06/24 06:24
+tags: Chef Server
+---
+
+昨日に引き続き本日も小ネタ。
+
+本日は朝早くからAWS上にてChef Serverを構築してみたりしておりました。
+
+adminのパスワードがわからなくなったのでリセットとかしたくなったけどググってもChef Server10でDBがまだCouch DBだった頃の情報ばかりでChef Server11系の情報があまりなかった(まぁ、結局頑張ってググってたら見つかったしこのブログはそれを参考に書いているんだけれども)ためここに書き残す。
+
+具体的には、PostgreSQLにログインしユーザの情報を削除して新たなユーザを作成する。
+
+以下は、adminユーザにて__hogehogeというパスワードでログイン__できるようにする場合
+
+まず、一旦、Chef Serverが動いているサーバの/etc/chef-server/chef-server-running.jsonのchef-server-webui->web_ui_admin_default_passwordに記載してあるパスワードでログインできないか確かめてみましょう。それがダメだったら以下手順でどうぞ
+
+    Chef Serverが起動しているサーバにて
+    # /opt/chef-server/embedded/bin/psql -U opscode_chef opscode_chef
+
+    BEGIN;
+    DELETE FROM osc_users WHERE username = 'admin';
+
+    INSERT INTO osc_users (id, authz_id, username, email, public_key, hashed_password, salt, hash_type, last_updated_by, created_at,
+    updated_at, external_authentication_uid, recovery_authentication_enabled, admin)
+    VALUES
+    ('000000000000fc42231d5c4b38a50be9', '000000000000fc42231d5c4b38a50be9', 'admin', NULL, '-----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApbZ7oh6xFk+1GFmni0TKujpqFdTN7Ii6tDgPFi3B/mr4k/a6fBJ7gp96lzN7cP5zrxL6mc5fjiUZrJBjgGjVTe+HVbuqc/E/H68SenOQFkO6V4UFmQ2nzKo1336iPR3O4gmacxctC0M+DrsJqv7SVQvDEoLTOax6uO2tXyesfe2qL/zJxNBP3pxu/9oBAuYK20hEfJoC88Yff4M9RtFUPqOnxlrbVrzStsJTBSffBcJjCe3zKAG4+EgkGNdLjPRD/512Geh34X+98L0zkyMkCS78gqo/pyqia3Dz5vnW6Cr2GfW78PDwjwdj/jcSXp+QsIy81imepWLERHdLhfSaHwIDAQAB
+    -----END PUBLIC KEY-----
+    ', '$2a$12$lNDCQ37UteDUyj0qwK55b.o2tnZeD.XptoekgUHAlItYHEnTIUQKq', '$2a$12$lNDCQ37UteDUyj0qwK55b.', 'erlang-bcrypt-0.5.0', '000000000000fc42231d5c4b38a50be9', '2013-06-23 21:23:11', '2013-06-23 21:27:44', NULL, false, true );
+    COMMIT;
+
+なお、このコードはChef Server 11.0.8で動作確認を行なっております。
+
+以下やり取りを参考にさせていただきました。
+(今ググったら、「Chef Server 11 password reset」では検索に引っかからないが、「Chef 11 password reset」ならすぐに出てきた。google先生、難しいですね。)
+
+* [[chef] how to reset webui password in chef 11](http://lists.opscode.com/sympa/arc/chef/2013-03/msg00279.html)

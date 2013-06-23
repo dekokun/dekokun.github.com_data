@@ -15,6 +15,8 @@ capistranoで並列数を絞ってhttpdを再起動していたため影響は�
 
 少し試してみたら、いろいろなパターンでhttpdが起動したりしなかったりconfigtestが成功したりしなかったりしますね。
 
+なお、以下はhttpdの2.2.23ですよ
+
 例1： ログディレクトリが存在しない場合
 
     # service httpd configtest; echo $?; service httpd restart

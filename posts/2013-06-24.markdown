@@ -21,15 +21,13 @@ adminのパスワードがわからなくなったのでリセットとかした
     # /opt/chef-server/embedded/bin/psql -U opscode_chef opscode_chef
 
     BEGIN;
-    DELETE FROM osc_users WHERE username = 'admin';
 
-    INSERT INTO osc_users (id, authz_id, username, email, public_key, hashed_password, salt, hash_type, last_updated_by, created_at,
-    updated_at, external_authentication_uid, recovery_authentication_enabled, admin)
-    VALUES
-    ('000000000000fc42231d5c4b38a50be9', '000000000000fc42231d5c4b38a50be9', 'admin', NULL, '-----BEGIN PUBLIC KEY-----
-    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApbZ7oh6xFk+1GFmni0TKujpqFdTN7Ii6tDgPFi3B/mr4k/a6fBJ7gp96lzN7cP5zrxL6mc5fjiUZrJBjgGjVTe+HVbuqc/E/H68SenOQFkO6V4UFmQ2nzKo1336iPR3O4gmacxctC0M+DrsJqv7SVQvDEoLTOax6uO2tXyesfe2qL/zJxNBP3pxu/9oBAuYK20hEfJoC88Yff4M9RtFUPqOnxlrbVrzStsJTBSffBcJjCe3zKAG4+EgkGNdLjPRD/512Geh34X+98L0zkyMkCS78gqo/pyqia3Dz5vnW6Cr2GfW78PDwjwdj/jcSXp+QsIy81imepWLERHdLhfSaHwIDAQAB
-    -----END PUBLIC KEY-----
-    ', '$2a$12$lNDCQ37UteDUyj0qwK55b.o2tnZeD.XptoekgUHAlItYHEnTIUQKq', '$2a$12$lNDCQ37UteDUyj0qwK55b.', 'erlang-bcrypt-0.5.0', '000000000000fc42231d5c4b38a50be9', '2013-06-23 21:23:11', '2013-06-23 21:27:44', NULL, false, true );
+    UPDATE osc_users
+    SET hashed_password = '$2a$12$lNDCQ37UteDUyj0qwK55b.o2tnZeD.XptoekgUHAlItYHEnTIUQKq',
+        salt = '$2a$12$lNDCQ37UteDUyj0qwK55b.',
+        hash_type = 'erlang-bcrypt-0.5.0'
+    WHERE username = 'admin';
+
     COMMIT;
 
 なお、このコードはChef Server 11.0.8で動作確認を行なっております。

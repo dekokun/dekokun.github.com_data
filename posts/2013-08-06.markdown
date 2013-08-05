@@ -1,0 +1,108 @@
+---
+title: PostgreSQLのhstoreを触ってみた
+author: @dekokun
+date: 2013/08/05 22:38
+tags: PostgreSQL, hstore
+---
+
+PostgreSQLにはhstoreなる、キーと値の集合を単一の列に保持できる型があると聞き及びまして、普段MySQLな私ですがこれは一度触ってみなくてはいかんと触ってみたのでした。
+
+普通のselectとの非常に簡単(かつ不正確)な速度比較とインデックス作成くらいしかやってませんが。
+
+## 導入
+
+今回、AWSのm1.small上に構築したCentOS6.3を使用しています。PostgreSQLのバージョンは最新のStableバージョンである9.2を使用。
+
+[PostgreSQL RPM Building Project - Yum Repository ](http://yum.postgresql.org/)からstableバージョンをダウンロードし、
+
+インストール
+
+    # rpm -ivh pgdg-centos92-9.2-6.noarch.rpm
+    # rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-92
+    # yum -y install postgresql92-server
+    # yum -y install postgresql92-contrib.x86_64
+
+初期化
+
+    # service postgresql-9.2 initdb
+
+デーモンスタート
+
+    # service postgresql-9.2 start
+    # su - postgres
+    $ psql
+
+hstoreの有効化
+
+    postgres=# CREATE EXTENSION hstore;
+
+## 計測
+
+    postgres=# \timing
+    Timing is on.
+
+テーブル作成
+
+    postgres=# CREATE TABLE hstore_tbl AS
+    postgres-#     SELECT
+    postgres-#         ('"hoge"=>' || RANDOM() || ' , "fuga"=>2')::hstore AS hstore, cast(RANDOM() as text) AS fuga
+    postgres-#     FROM
+    postgres-#         generate_series(1,1000000)
+    postgres-#     ;
+    SELECT 1000000
+    Time: 5500.272 ms
+    postgres=# SELECT * FROM hstore_tbl LIMIT 1;
+                      hstore                   |       fuga
+    -------------------------------------------+-------------------
+     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
+    (1 row)
+    
+    Time: 0.605 ms
+
+普通のカラムの検索
+
+    postgres=# select * from hstore_tbl where fuga = '0.392216250766069';
+                      hstore                   |       fuga
+    -------------------------------------------+-------------------
+     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
+    (1 row)
+    
+
+hstoreなカラムの検索
+
+    Time: 205.692 ms
+    postgres=# select * from hstore_tbl where hstore->'hoge' = '0.0839038179256022';
+                      hstore                   |       fuga
+    -------------------------------------------+-------------------
+     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
+    (1 row)
+    
+    Time: 302.522 ms
+
+インデックスを貼ってみた
+
+    postgres=# CREATE INDEX hstore_index ON hstore_tbl ((hstore->'hoge'));
+    CREATE INDEX
+    Time: 18843.262 ms
+    postgres=# CREATE INDEX text_index ON hstore_tbl (fuga);
+    CREATE INDEX
+    Time: 53691.437 ms
+    postgres=# select * from hstore_tbl where fuga = '0.392216250766069';
+                      hstore                   |       fuga
+    -------------------------------------------+-------------------
+     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
+    (1 row)
+    
+    Time: 0.756 ms
+    postgres=# select * from hstore_tbl where hstore->'hoge' = '0.0839038179256022';
+                      hstore                   |       fuga
+    -------------------------------------------+-------------------
+     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
+    (1 row)
+    
+    Time: 0.604 ms
+
+hstore型なカラムの検索、ド派手に遅くなるんじゃないかと思っておりましたが意外とそんなことはないんですね。
+
+インデックスも貼れますし、今後使用を検討してもいいかもしれませんね。
+

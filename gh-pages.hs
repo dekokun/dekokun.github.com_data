@@ -118,7 +118,7 @@ feedConfiguration = FeedConfiguration
     { feedTitle       = blogTitle
     , feedDescription = blogTitle ++ "のRSSフィード"
     , feedAuthorName  = "dekokun"
-    , feedRoot  = "http://dekokun.github.com"
+    , feedRoot  = "http://dekokun.github.io"
     , feedAuthorEmail = "shintaro.kurachi@gmail.com"
     }
 

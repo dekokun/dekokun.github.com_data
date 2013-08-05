@@ -106,3 +106,10 @@ hstore型なカラムの検索、ド派手に遅くなるんじゃないかと�
 
 インデックスも貼れますし、今後使用を検討してもいいかもしれませんね。
 
+最後に、[@r_rudy](https://twitter.com/r_rudi)さんとのやり取り
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/dekokun">@dekokun</a> かなり便利ですよ。indexも貼れますし。ただ、データの取り出しがちょっと遅いので、普段使う分には問題ないですが、速度がものすごく重要なところには使わないほうがいいかと思います。</p>&mdash; しろう (@r_rudi) <a href="https://twitter.com/r_rudi/statuses/364370906103033858">August 5, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet"><p><a href="https://twitter.com/dekokun">@dekokun</a> 遅いのは内部実装がTextという文字列で持っているからなのですが、そこをmsgpackにするという試験実装をされた方がいまして、数倍速くなったそうです。PostgreSQLにはほかにもいろいろ便利な機能があるのでぜひ使ってください！</p>&mdash; しろう (@r_rudi) <a href="https://twitter.com/r_rudi/statuses/364372885256671232">August 5, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>

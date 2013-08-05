@@ -113,3 +113,5 @@ hstore型なカラムの検索、ド派手に遅くなるんじゃないかと�
 
 <blockquote class="twitter-tweet"><p><a href="https://twitter.com/dekokun">@dekokun</a> 遅いのは内部実装がTextという文字列で持っているからなのですが、そこをmsgpackにするという試験実装をされた方がいまして、数倍速くなったそうです。PostgreSQLにはほかにもいろいろ便利な機能があるのでぜひ使ってください！</p>&mdash; しろう (@r_rudi) <a href="https://twitter.com/r_rudi/statuses/364372885256671232">August 5, 2013</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+FDWとかも私、興味あります

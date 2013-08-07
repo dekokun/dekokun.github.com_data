@@ -59,16 +59,6 @@ hstoreの有効化
     
     Time: 0.605 ms
 
-普通のカラムの検索
-
-    postgres=# select * from hstore_tbl where fuga = '0.392216250766069';
-                      hstore                   |       fuga
-    -------------------------------------------+-------------------
-     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
-    (1 row)
-    Time: 205.692 ms
-    
-
 hstoreなカラムの検索
 
     postgres=# select * from hstore_tbl where hstore->'hoge' = '0.0839038179256022';
@@ -78,6 +68,18 @@ hstoreなカラムの検索
     (1 row)
     
     Time: 302.522 ms
+
+速度比較のための普通のカラムの検索
+
+    postgres=# select * from hstore_tbl where fuga = '0.392216250766069';
+                      hstore                   |       fuga
+    -------------------------------------------+-------------------
+     "fuga"=>"2", "hoge"=>"0.0839038179256022" | 0.392216250766069
+    (1 row)
+    Time: 205.692 ms
+    
+
+やはりhstoreな検索よりは早いですねぇ。
 
 インデックスを貼ってみた
 

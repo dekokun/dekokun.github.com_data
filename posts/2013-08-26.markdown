@@ -1,0 +1,74 @@
+---
+title: git ls-remoteコマンドの終了ステータスがデフォルトでは期待するものと違う件とその対策
+author: @dekokun
+date: 2012/08/26 1:30
+tags: git
+---
+
+なんらかの要因で、自前でデプロイスクリプトを構築していたとします。
+
+タグやブランチ名を指定したデプロイを可能にしたかったとします。
+
+リモートリポジトリに存在しないタグやブランチをデプロイ対象として指定されたらエラーにしたいため、リモートリポジトリにそのタグやブランチが存在するかどうかを知りたいとします。
+
+そんなことはgit ls-remoteにてできそうだったので試してみたら、イマイチだったという話とその解決策。
+
+## 説明
+
+git ls-remoteコマンドは、リポジトリの場所とリファレンスを引数に渡すとそのコミットIDを取得してくれるコマンドなのです。
+私のリポジトリのmasterのコミットIDを取得しようとすると、こんな感じ。
+
+    git ls-remote git@github.com:dekokun/dekokun.github.com_data.git master
+    d4e508e59b4fb38f41489d7bef8aa1be8e1bd9ec        refs/heads/master
+
+これを使えば、存在しないブランチやらタグの取得は、git ls-remoteの終了ステータスコードを利用して
+
+    # 注：このコードは想定通りに動きません
+    git ls-remote git@github.com:dekokun/dekokun.github.com_data.git hogehogefugafuga >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      echo '存在するブランチを指定してね〜'
+      usage
+      exit 1
+    fi
+
+みたいなことできそうじゃないですか。しかし残念ながらそれは無理なんです。なぜなら、git ls-remoteはそのリファレンスが存在しなくても終了ステータスは0(正常終了)を返してくれてしまうからなのですね。
+
+    git ls-remote git@github.com:dekokun/dekokun.github.com_data.git not-exists-branch; echo $?
+    0
+
+あらあらどうしましょうという感じだったので、解決策を2点ほど。
+
+## 解決策
+
+### オプションを変える(git 1.7.6以降)
+
+exit-codeオプションをつけると、存在しないリファレンスを指定した際の終了コードは2が返ってきます。
+
+    git ls-remote --exit-code git@github.com:dekokun/dekokun.github.com_data.git not-exists; echo $?
+    2
+
+これなら以下が使えますね。
+
+    git ls-remote --exit-code git@github.com:dekokun/dekokun.github.com_data.git hogehogefugafuga >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      echo '存在するブランチを指定してね〜'
+      usage
+      exit 1
+    fi
+
+ただし、git 1.7.6以降…
+
+### 力技
+
+存在しないリファレンスを指定した際は出力が0行であることを利用します。
+
+    if [ $(git ls-remote $git_url $version | wc -l) -eq 0 ]; then
+      echo '存在するブランチを指定してね〜'
+      usage
+      exit 1
+    fi
+
+## まとめ
+
+git 1.7.6以降を使おう。
+git ls-remote以外を使ったもっと簡単な方法あるかなぁ。

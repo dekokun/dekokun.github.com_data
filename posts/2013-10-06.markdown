@@ -1,5 +1,5 @@
 ---
-title: ISUCON予選にPHP実装で参加して3位になりましたー やったことなどまとめ
+title: ISUCON予選にPHP実装で参加して3位になりましたーやったことなどまとめ
 author: @dekokun
 date: 2013/10/06 20:15
 tags: contest

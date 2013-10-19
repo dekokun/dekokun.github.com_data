@@ -14,7 +14,7 @@ tags: Chef Server
 
     erchef['s3_url_ttl'] = 3600
 
-と記述した後に、 chef-server-ctl reconfigureしましょう。
+と記述した後に、 chef-server-ctl reconfigureしましょう。これで、制限時間が15分から1時間まで伸びます。
 
 なお、私はOpscodeから提供されているChef自体のクックブックでChefサーバを作成したりしているのですが、それの実行時のアトリビュートを以下のように設定することで対処することもできますよ。
 

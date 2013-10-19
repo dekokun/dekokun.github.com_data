@@ -1,0 +1,34 @@
+---
+title: Chef Serverにてクックブックの実行時間が長いとForbiddenエラーが出る件
+author: @dekokun
+date: 2013/10/19 15:33
+tags: Chef Server
+---
+
+[怖くないScala勉強会](http://connpass.com/event/3420/)の休憩時間にこんなの書いてます。
+
+表題の件ですが、Chef Serverを使用していると、デフォルト状態では1つのクックブックの実行に15分以上かかるとエラーになります。
+気をつけましょう。
+
+どうにかしたい場合は、Chef Server上で/etc/chef-server/chef-server.rb を作成し、
+
+    erchef['s3_url_ttl'] = 3600
+
+と記述した後に、 chef-server-ctl reconfigureしましょう。
+
+なお、私はOpscodeから提供されているChef自体のクックブックでChefサーバを作成したりしているのですが、それの実行時のアトリビュートを以下のように設定することで対処することもできますよ。
+
+        "chef-server": {
+      "configuration": {
+        "erchef": {
+          "s3_url_ttl": 3600
+        }
+      }
+    }
+
+以上。休憩時間がそろそろ終わるので簡潔に。
+
+参考：
+
+- [long running recipes cause Forbidden errors ](http://linkis.com/tickets.opscode.com/uQ7r)
+

@@ -1,0 +1,101 @@
+ ---
+title: 初心者向け タイプヒンティングとはなんなのかというお話
+author: @dekokun
+date: 2013/12/14 15:33
+tags: PHP
+---
+
+
+どうも、[PHP Advent Calendar
+2013](http://qiita.com/advent-calendar/2013/php)の14日目の記事です。
+
+昨日は[@ockeghem](https://twitter.com/ockeghem)の[PHPとセキュリティの解説書12種類を読んでSQLエスケープの解説状況を調べてみた](http://blog.tokumaru.org/2013/12/php12sql.html)でしたね。
+
+最近、仕事を一緒にし始めた後輩がPHPに慣れておらず、PHPのタイプヒンティングのことを知らなかったので(そして、さっき一緒にお酒を飲んだ別の後輩もタイプヒンティングを知らなかったので)、彼らに向けて、タイプヒンティングとはなにか、なぜタイプヒンティングを使うのかを解説する記事となります。
+
+PHPのことをよく知っている皆様におかれましては特に得るものはないお話なのかなと思います。ご了承ください。なお、下記のような流れを経て、このブログの内容は当初の予定から変遷しました。
+
+<blockquote class="twitter-tweet"
+lang="ja"><p>「returnとrequireでファイル間で値を受け渡しできるよ、でもonce系を使う場合は注意な」ってAdvent
+Calendarで書こうとしていたんだけど既にHirakuさんが全く同じこと書いてた。  <a
+href="http://t.co/FMhGllrYJz">http://t.co/FMhGllrYJz</a></p>&mdash;
+でこくん (@dekokun) <a
+href="https://twitter.com/dekokun/statuses/405917922805047296">2013,
+11月 28</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## タイプヒンティングとは
+
+関数及びメソッドが受け取る引数がどのオブジェクトなのか(もしくはなんのインターフェースを備えるか)、配列なのか、コールバックなのかなどを指定することが出来る機能です。
+
+### 具体例
+
+
+   // この"array $a"の"array"部分がタイプヒンティング
+   function func(Iterator $a) {
+       return $a->next();
+   }
+
+上記の "array"部分がタイプヒンティングとなります。
+
+
+### 違反するとどうなるの？
+
+例えば、タイプヒンティングでクラスを指定したにもかかわらずスカラー値を指定された場合は例外が投げられます
+
+    <?php
+    
+    function func(TestClass $a) {
+        return $a;
+        }
+    
+        func(1);
+
+上記のようなコードは以下のような例外が投げられます
+
+    PHP Catchable fatal error:  Argument 1 passed to func() must be an instance of TestClass, integer given, called in /private/var/folders/hy/xc91_vr542z40knyzs4h9n2r0000gn/T/vHqWMFW/2 on line 8 and defined in /private/var/folders/hy/xc91_vr542z40knyzs4h9n2r0000gn/T/vHqWMFW/2 on line 4
+    
+    Catchable fatal error: Argument 1 passed to func() must be an instance of TestClass, integer given, called in /private/var/folders/hy/xc91_vr542z40knyzs4h9n2r0000gn/T/vHqWMFW/2 on line 8 and defined in /private/var/folders/hy/xc91_vr542z40knyzs4h9n2r0000gn/T/vHqWMFW/2 on line 4
+
+
+## 何が嬉しいの？
+
+- エラーを早めに検知可能
+- (コメントなどと比べて)検証可能、腐ることのない形(=メソッドのドックコメントなどとは違うのですよ)でメソッドの前提条件を指定可能
+- そもそも、変なことが起きた時に例外が投げられるというのは、エラーを返り値で返しがちなPHPにとっては非常に重要なことだと思います
+
+## どんな時に使うの？
+
+少なくとも、現世利益的なことを話しますと、タイプヒンティングによって、期待しないクラス(とか配列とかコールバックとか)が引数にわたってこないことが保証されるため、バリデーションを減らすことができます。
+
+たとえば、以下のようなコードの場合、
+if(is_array($a)) {throw new \InvalidArgumentException;}
+とかやる必要はなくなります。
+
+    <?php
+    
+    function func(array $a) {
+        return $a;
+    }
+    
+    func(1);
+
+
+
+### コールバック
+
+### とあるメソッドを持っているかどうかの検査
+
+### 配列かどうか
+
+例外を投げずにエラーステータスを返す関数への防御になりますね。
+
+## 最後
+
+便利だから積極的に使って行こったほうがいいと思います。後輩たちにおかれましても、少なくともライブラリのコードを読んで「ここはタイプヒンティングを使っているんだ！！」ということをわかるようになっていればと思います。
+
+というか、なんか色々骨抜きなブログだ！！！！！
+
+他にも、「名前空間の使い方」とか「composerをなぜ使うのか」とか、「migrationをなぜ使うのか」とか、伝えたいことは非常にたくさんあるのですが、本日は時間もないですしこのあたりで筆を置きます。
+
+酔っ払ってるしね。

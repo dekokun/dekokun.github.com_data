@@ -30,13 +30,16 @@ href="https://twitter.com/dekokun/statuses/405917922805047296">2013,
 
 ### 具体例
 
+こんな感じ
 
-   // この"array $a"の"array"部分がタイプヒンティング
-   function func(Iterator $a) {
-       return $a->next();
-   }
+    <?php
+    // この"Iterator $a"の"Iterator"部分がタイプヒンティング
+    // ここで、$aはIteratorと同様のインターフェースを備えていることが保証される
+    function func(Iterator $a) {
+        return $a->next();
+    }
 
-上記の "array"部分がタイプヒンティングとなります。
+上記の "Iterator"部分がタイプヒンティングとなります。
 
 
 ### 違反するとどうなるの？
@@ -47,11 +50,11 @@ href="https://twitter.com/dekokun/statuses/405917922805047296">2013,
     
     function func(TestClass $a) {
         return $a;
-        }
+    }
     
-        func(1);
+    func(1);
 
-上記のようなコードは以下のような例外が投げられます
+上記のようなコードは以下のようなFatal errorが投げられます
 
     PHP Catchable fatal error:  Argument 1 passed to func() must be an instance of TestClass, integer given, called in /private/var/folders/hy/xc91_vr542z40knyzs4h9n2r0000gn/T/vHqWMFW/2 on line 8 and defined in /private/var/folders/hy/xc91_vr542z40knyzs4h9n2r0000gn/T/vHqWMFW/2 on line 4
     
@@ -62,15 +65,13 @@ href="https://twitter.com/dekokun/statuses/405917922805047296">2013,
 
 - エラーを早めに検知可能
 - (コメントなどと比べて)検証可能、腐ることのない形(=メソッドのドックコメントなどとは違うのですよ)でメソッドの前提条件を指定可能
-- そもそも、変なことが起きた時に例外が投げられるというのは、エラーを返り値で返しがちなPHPにとっては非常に重要なことだと思います
+- そもそも、変なことが起きた時にエラーが起きて死ぬというのは、エラーを返り値で返しがちなPHPにとっては非常に重要なことだと思います
 
 ## どんな時に使うの？
 
 少なくとも、現世利益的なことを話しますと、タイプヒンティングによって、期待しないクラス(とか配列とかコールバックとか)が引数にわたってこないことが保証されるため、バリデーションを減らすことができます。
 
 たとえば、以下のようなコードの場合、
-if(is_array($a)) {throw new \InvalidArgumentException;}
-とかやる必要はなくなります。
 
     <?php
     
@@ -78,8 +79,15 @@ if(is_array($a)) {throw new \InvalidArgumentException;}
         return $a;
     }
     
-    func(1);
 
+$aは配列であることが保証されるため、func関数の中で
+
+    if(is_array($a)) {
+        throw new \InvalidArgumentException;
+    }
+    // do_something();
+
+などのチェックを行う必要はなくなります。
 
 
 ### コールバック
@@ -99,3 +107,5 @@ if(is_array($a)) {throw new \InvalidArgumentException;}
 他にも、「名前空間の使い方」とか「composerをなぜ使うのか」とか、「migrationをなぜ使うのか」とか、伝えたいことは非常にたくさんあるのですが、本日は時間もないですしこのあたりで筆を置きます。
 
 酔っ払ってるしね。
+
+次回は[k-motoyan](http://qiita.com/k-motoyan)による「FWに依存しないDBマイグレーションツール」ですね。楽しみですね

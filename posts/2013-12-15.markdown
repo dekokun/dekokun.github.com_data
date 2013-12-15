@@ -1,0 +1,103 @@
+---
+title: PHP書きが久しぶりにRubyの言語仕様を詳しく思い出して抱いた感想たち
+author: @dekokun
+date: 2013/12/15 20:47
+tags: Ruby
+---
+
+
+どうも、[パーフェクトRuby Advent Calendar 2013](http://www.adventar.org/calendars/198)の15日目の記事です。
+
+昨日は[@Shindo200](https://twitter.com/Shindo200)の[-> { "Perfect Ruby Advent Calendar" }.call](http://shindolog.hatenablog.com/entry/2013/12/14/235211)でしたね。
+
+昨日はPHPのアドベントカレンダーを書き、今日はRuby系のアドベントカレンダーを書く、因果なものですね。
+
+## 私とパーフェクトRubyの因縁
+
+<blockquote class="twitter-tweet" lang="ja"><p>すがさんと一緒に合コンした身としては、パーフェクトRubyは買わなくてはいけないなと思っているわけですよ。まだ買ってないけど。</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/statuses/373461858990043136">2013, 8月 30</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+上記のようなツイートをしておきながらずっとパーフェクトRubyを買ってなかったのですが、パーフェクトRubyアドベントカレンダーが存在すると聞いて買ってみたのでした。
+
+<blockquote class="twitter-tweet" lang="ja"><p>アドベントカレンダー登録したのでパーフェクトRubyを購入した。RubyはChefのレシピ作成に使っているのでもっと深く知りたいですね☆  パーフェクトRuby Advent Calendar 2013 <a href="http://t.co/VA8ZleGSer">http://t.co/VA8ZleGSer</a> <a href="https://twitter.com/search?q=%23adventar&amp;src=hash">#adventar</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/statuses/405656020019458049">2013, 11月 27</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+その後、会社の行き帰りで頭から読んでいたのですが、残念ながら全部読み終われませんでした。具体的には、5章まで(1/3もいってない!!!)しか読めませんでした。ですので、5章までで、普段書いているPHPとくらべて、面白いなぁと思ったところを記載します。
+
+実は私のプログラミングの歴史はRubyから始まっております(大学の講義でRubyを習い、その後[Project Euler](http://projecteuler.net/)の問題をひたすらRubyで解いていた記憶が)。そして、会社でPHPを書きながら「PHPのようなクソ言語は好かん。やはり全てがオブジェクトであるRubyかっこいいよRuby」といいながら、たまにあるバッチ処理をちょろっとRubyで書いたりRailsで忘年会用のWebサイトを作成するくらいで「俺は時代の先端のRubyを使いこなすプログラマだぜ」と言っているような痛い感じのプログラマでした。
+
+そんな私が、今では毎日PHPを書いてすっかりPHPの魅力に魅せられ、Rubyのことは完全に忘れて今ではChefのレシピをRuby上のDSLで書いているだけの脳で、パーフェクトRubyを読み久しぶりにRubyの言語仕様を思い出して感じたことをひたすら列挙していきます。
+
+なお、以下にはパーフェクトRubyのページ数も記載していますが、これは初版の際のページ数です。
+
+## 定数の再代入(p49)
+
+- 再代入可能というのは面白いんですが、なぜそんな設計にしたんでしたっけ。再代入可能なことによってどのような利点があるんですかね。
+
+## モジュール(p57)
+
+- PHPでいうところの、traitと名前空間を組み合わせたようなものですね
+- 昔はPHPにはtraitも名前空間もなく、単一継承のみ可能な言語であったためRubyのモジュールがうらやましかったのですが、最近はtraitや名前空間が出てきて、PHPもいい感じですね
+
+## %記法(p62)
+
+- 純粋に便利。Chefのレシピ書く際にも非常にお世話になっています
+- PHPでは、PHP5.4で「配列がRubyみたいに"[]"で宣言できるようになった！マジ便利！」と言っている感じで、%記法の存在するRubyと比べると、配列の初期化の容易さでは一歩負けているなと思う次第
+
+## 擬似変数たち(p70)
+
+- true, false, nilって擬似変数っていうものだったのか。それぞれがTrueClass, FalseClass, NilClassの唯一のインスタンス。
+
+インスタンスつくろうとしたら怒られた。
+
+    [1] pry(main)> true_val = TrueClass.new
+    NoMethodError: undefined method `new' for TrueClass:Class
+    from (pry):1:in `__pry__'
+
+
+
+- PHPでは\_\_DIR\_\_は\_\_FILE\_\_と同じ、「[自動的に定義される定数](http://www.php.net/manual/ja/language.constants.predefined.php)」なのですが、Rubyでは\_\_dir\_\_はKernelモジュールのメソッドであり、\_\_FILE\_\_は擬似変数であるという違いがある
+
+## 数々の組み込み変数(p71)
+
+- Perlやシェルスクリプトもそうだけど、これらのググらビリティの低さは異常であり、ちょっとどうにかしてほしい
+- でも、便利なことは間違いない。いいですね
+
+## 演算子がメソッドとして定義！！！(p74)
+
+- これは昔からRubyの羨ましかったところ
+- 1+1が 1.+(1)のシンタックスシュガーであるとか、やばい
+- 全てがオブジェクトであるRuby(本当は、「なんでもはオブジェクトじゃないわよ。オブジェクトであるものだけ。」ですが。[Rubyでは、すべてがオブジェクト。じゃないよ！](http://d.hatena.ne.jp/shunsuk/20100407/1270642620))だからこそこういうことがしやすいんですよねと思いました
+- ただ、一つ疑問なのは、Rubyはオープンクラスであることもあり、こういう基本的な演算子系をモンキーパッチとして書き換えたりもできるわけだ。Ruby書き達はその誘惑にどのように打ち勝っているのだろうか。(まぁ、この辺りの問題と我々がどうすればいいかはMatzの「[Rubyは君を信頼する。Rubyは君を分別のあるプログラマとして扱う。Rubyはメタプログラミングのような強力な力を与える。ただし、大いなる力には、大いなる責任が伴うことを忘れてはいけない](http://www.atmarkit.co.jp/news/201009/13/spell.html)」という言葉が端的に表してますね)
+
+## case .. when(p77)
+
+- 一般的な他の言語のswitchと違い、fall throughできないのがとても良い。fall throughはバグの温床
+- 一方で、明示的にfall throughしたい場面は存在すると思うので、Goのように明示的にfall throughを指定できる感じだとより嬉しかったとは思う
+- なお、全く関係ないがPythonにはswitch系の構文が存在しない
+- これも特に関係ないが、昔読んだブログを思い出した [Rubyのcaseを〇〇(言語名)のswitch文だと思っている人たちにぼくから一言ガツンと申し上げたい](http://melborne.github.io/2013/02/25/i-wanna-say-something-about-rubys-case/)
+
+## メソッドやクラス/モジュール定義で例外を捕捉(p88)
+
+- なんだこれ便利すぎる。知らなかった。
+- いつも、PHPを書く際にメソッドごとtry{}でくくってネストが1段階下がるのにイライラしていたのでとても嬉しい感じですね
+- ついでに言うと、retryも便利すぎるんだが。えっbeginからもう一回やり直してくれるのなにそれ。
+
+そろそろ時間もきているのでこれ以上列挙するのはやめておこう。
+
+## ところで
+
+なんか、Rubyをひたすら褒めているだけな感じがしてきて、PHP書きとして面白くなくなってきたので、最後にPHPがRubyに対して圧倒的に優れていると思う点を書いておこう
+
+__PHPのインターフェース及びタイプヒンティングはとても優れています！！！！！！__
+
+いえ、まぁ、Rubyはダックタイピングな言語ですもんね。
+
+## 最後に
+
+昔の私は所詮Rubyを手慰み程度でしか触っていなかったし、もっと何かRubyで作りたいですね。
+
+ただ、現在PHPばかり書いているので、Rubyのような動的型付け言語ではなくもっとPHPと離れた言語を触りたいと思う今日このごろ。やはりこの前某氏にオススメされたAgdaか。証明！！！
+
+
+

@@ -82,7 +82,7 @@ href="https://twitter.com/dekokun/statuses/405917922805047296">2013,
 
 $aは配列であることが保証されるため、func関数の中で
 
-    if(is_array($a)) {
+    if(! is_array($a)) {
         throw new \InvalidArgumentException;
     }
     // do_something();

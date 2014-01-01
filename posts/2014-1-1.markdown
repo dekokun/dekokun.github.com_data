@@ -9,7 +9,9 @@ tags: Node.js
 
 ## 初めに
 
-2年ほど前にNodeを使っていた時は、複数バージョン管理には[npm](https://github.com/creationix/nvm)及び[nave](https://github.com/isaacs/nave)が二大巨頭だった感じがありますが、調べたら[n](https://github.com/visionmedia/n)というのが最近出ていたので使ってみました
+2年ほど前にNodeを使っていた時は、複数バージョン管理には[npm](https://github.com/creationix/nvm)及び[nave](https://github.com/isaacs/nave)が二大巨頭だった感じがありますが、調べたら[n](https://github.com/visionmedia/n)というのがあったので使ってみました
+
+(2014/01/02 追記 nは、半年ほど前に開発が止まっているようだし、ちょっとイマイチなのかな…)
 
 ## 雰囲気
 

@@ -17,6 +17,8 @@ tags: Node.js
 
 - [Readme.md](https://github.com/visionmedia/n/blob/master/Readme.md)
 
+作者はexpressやjadeを作っている安心のvisionmediaさん。
+
 ## インストール
 
 - なんらかの方法によってNode.js及びnpmをインストールし、`npm install n -g`

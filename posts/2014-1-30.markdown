@@ -1,0 +1,20 @@
+---
+title: Zabbixで「○回のうち○回失敗したら」というトリガー設定
+author: @dekokun
+date: 2013/01/30 00:45
+tags: Zabbix
+---
+
+忘れがちなので
+
+````
+アイテム名..count(直近何回から取得するか, 値, "gtとかeqとか")>回数
+
+例：
+{Template OS Linux:system.cpu.util[,iowait].count(#5, 30, "gt")}>3
+
+直近5回の計測でiowaitが30よりも大きい場合が3回より多くあったらトリガー発動
+
+````
+
+それだけ。

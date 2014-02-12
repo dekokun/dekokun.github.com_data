@@ -7,6 +7,8 @@ tags: Lang-8
 
 本日は、Lang-8がオフィス移転をした記念ということで、[Lang-8 Sushi Karaage](http://www.zusaar.com/event/3497004)が開かれました。私は参加してきました！！
 
+最初に、Lang-8はiOSエンジニアを募集しているそうですよ！[wantedly 本当にグローバルなアプリを作りたいiOSエンジニア募集! ](https://www.wantedly.com/projects/5123)
+
 ## お話ししたこと
 
 [KitchHike](https://kitchhike.com/)というサービスを運営している方とお話をしました。

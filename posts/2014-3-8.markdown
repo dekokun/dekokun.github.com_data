@@ -27,16 +27,15 @@ DIとモックで快適なテストライフを送りましょう。
 
         public function setUp()
         {
-            // HOGEクラスの定義は下部に記載
             $mock = m::mock('\HOGE', ['a', 'b']);
-            // 引数がhogeだったら100を返す
-            $mock->shouldReceive('get')->with('hoge')->andReturn(100);
-            // 引数がfugaだったら0を返す
-            $mock->shouldReceive('get')->with('fuga')->andReturn(0);
+            // 引数がhogeだったら"mock : hoge"を返す
+            $mock->shouldReceive('get')->with('hoge')->andReturn('mock : hoge');
+            // 引数がfugaだったら"mock : fuga"を返す
+            $mock->shouldReceive('get')->with('fuga')->andReturn('mock : fuga');
             // それ以外の引数の場合は元のクラスの動作をさせる
             $mock->shouldReceive('get')->passthru();
-            // 引数がfooだったら0を返す ?
-            $mock->shouldReceive('get')->with('foo')->andReturn(0);
+            // 引数がfooだったら"mock : foo"を返す ?
+            $mock->shouldReceive('get')->with('foo')->andReturn('mock : foo');
             $this->mock = $mock;
         }
 
@@ -45,15 +44,15 @@ DIとモックで快適なテストライフを送りましょう。
         */
         public function Mockeryが特定の引数の時だけちゃんと動く()
         {
-            $this->assertEquals(100, $this->mock->get('hoge'));
+            $this->assertEquals('mock : hoge', $this->mock->get('hoge'));
         }
 
         /**
         * @test
         */
-        public function withでの指定が2個目でもandReturnでの指定は成功する()
+        public function withでの指定が2個目でも成功する()
         {
-            $this->assertEquals(0, $this->mock->get('fuga'));
+            $this->assertEquals('mock : fuga', $this->mock->get('fuga'));
         }
 
         /**
@@ -69,7 +68,7 @@ DIとモックで快適なテストライフを送りましょう。
         */
         public function passthruの後の指定は無効()
         {
-            // with('foo')->andReturn(0) としたはずだが…
+            // with('foo')->andReturn('mock : foo') としたはずだが…
             $this->assertEquals('original : fooab', $this->mock->get('foo'));
         }
     }
@@ -90,6 +89,8 @@ DIとモックで快適なテストライフを送りましょう。
             return 'original : ' . $str . $this->a . $this->b;
         }
     }
+
+
 
 上記を実行すると、テストは全部通ります。めでたしめでたし。
 

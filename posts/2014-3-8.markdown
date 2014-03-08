@@ -1,0 +1,107 @@
+---
+title: PHPのMockeryでメソッドが特定の引数を受け取った時のみ動作を変えるモック作成方法
+author: @dekokun
+date: 2014/03/08 11:55
+tags: PHP, Mockery
+---
+
+テスト、モック使用が重要ですね。
+
+DIとモックで快適なテストライフを送りましょう。
+
+さて、現在、モックライブラリとしてMockeryを使っております。
+
+先日、ある引数が渡ってきた時だけ動作を変更するようなモックを作りたかったのですが軽く調べただけでは出てこないような情報だったためこちらに記載しておきます。
+
+具体的には、withで引数指定してshouldReturnで返り値を決定し、その後passthruを指定することにより、それ以外の引数の際は元のメソッドの動作を行わせることができます。
+
+ただし、以下でテストしているようにpassthruの後にwithで引数指定を行った場合は指定が効きませんのでご注意。
+
+    <?php
+     
+    use \Mockery as m;
+     
+    class MockeryTest extends PHPUnit_Framework_TestCase
+    {
+        private $mock;
+
+        public function setUp()
+        {
+            // HOGEクラスの定義は下部に記載
+            $mock = m::mock('\HOGE', ['a', 'b']);
+            // 引数がhogeだったら100を返す
+            $mock->shouldReceive('get')->with('hoge')->andReturn(100);
+            // 引数がfugaだったら0を返す
+            $mock->shouldReceive('get')->with('fuga')->andReturn(0);
+            // それ以外の引数の場合は元のクラスの動作をさせる
+            $mock->shouldReceive('get')->passthru();
+            // 引数がfooだったら0を返す ?
+            $mock->shouldReceive('get')->with('foo')->andReturn(0);
+            $this->mock = $mock;
+        }
+
+        /**
+        * @test
+        */
+        public function Mockeryが特定の引数の時だけちゃんと動く()
+        {
+            $this->assertEquals(100, $this->mock->get('hoge'));
+        }
+
+        /**
+        * @test
+        */
+        public function withでの指定が2個目でも成功する()
+        {
+            $this->assertEquals(0, $this->mock->get('fuga'));
+        }
+
+        /**
+        * @test
+        */
+        public function withで指定されていなかった場合は元のメソッドと同じ動きをする()
+        {
+            $this->assertEquals('original : piyoab', $this->mock->get('piyo'));
+        }
+
+        /**
+        * @test
+        */
+        public function passthruの後の指定は無効()
+        {
+            // with('foo')->andReturn(0) としたはずだが…
+            $this->assertEquals('original : fooab', $this->mock->get('foo'));
+        }
+    }
+         
+    class HOGE
+    {
+         
+        protected $a;
+        protected $b;
+         
+        public function __construct($a, $b)
+        {
+            $this->a = $a;
+            $this->b = $b;
+        }
+        public function get($str)
+        {
+            return 'original : ' . $str . $this->a . $this->b;
+        }
+    }
+
+上記を実行すると、テストは全部通ります。めでたしめでたし。
+
+    vendor/bin/phpunit test.php
+        PHPUnit 3.7.32 by Sebastian Bergmann.
+    
+    ....
+    
+    Time: 27 ms, Memory: 3.00Mb
+    
+    OK (4 tests, 4 assertions)
+
+## まとめ
+
+* mockeryを使った際に、メソッドがある引数を受け取った時だけモックの動きを変え、それ以外の引数の時は元のメソッドの動きをさせる場合はwithとpassthruを組み合わせて使いましょう

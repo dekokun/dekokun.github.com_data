@@ -51,7 +51,7 @@ DIとモックで快適なテストライフを送りましょう。
         /**
         * @test
         */
-        public function withでの指定が2個目でも成功する()
+        public function withでの指定が2個目でもandReturnでの指定は成功する()
         {
             $this->assertEquals(0, $this->mock->get('fuga'));
         }

@@ -93,13 +93,13 @@ DIとモックで快適なテストライフを送りましょう。
 
 上記を実行すると、テストは全部通ります。めでたしめでたし。
 
-    vendor/bin/phpunit test.php
-        PHPUnit 3.7.32 by Sebastian Bergmann.
-    
+    $ vendor/bin/phpunit test.php
+    PHPUnit 4.0.3 by Sebastian Bergmann.
+
     ....
-    
-    Time: 27 ms, Memory: 3.00Mb
-    
+
+    Time: 36 ms, Memory: 3.25Mb
+
     OK (4 tests, 4 assertions)
 
 ## まとめ

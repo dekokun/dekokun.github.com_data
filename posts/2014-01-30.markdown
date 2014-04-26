@@ -1,7 +1,7 @@
 ---
 title: Zabbixで「○回のうち○回失敗したら」というトリガー設定
 author: @dekokun
-date: 2013/01/30 00:45
+date: 2014/01/30 00:45
 tags: Zabbix
 ---
 

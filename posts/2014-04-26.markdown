@@ -14,9 +14,9 @@ tags: PHP
 参照：[array_search](http://www.php.net/manual/ja/function.array-search.php)
 
     <?php
-    array_search(1, [2, 3, 4, 1]); => 3
+    array_search(1, [2, 3, 4, 1]); // => 3
     // インデックス3の値が1なので、3が返ってきた
-    array_search(1, [2, 1, 4, 1]); => 1
+    array_search(1, [2, 1, 4, 1]); // => 1
     // 複数マッチした場合は最初にマッチした値を返す
 
 という感じですね。

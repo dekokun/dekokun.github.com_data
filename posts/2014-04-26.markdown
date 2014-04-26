@@ -35,9 +35,8 @@ PHPのarray_searchは配列の中に値が存在するかどうかを判定し�
 
     <?php
     
-    // 'hoge'なんて引数の配列の中に存在しないのでfalseが返るよね！
     function test() {
-      // 1は引数の配列の中に存在するしこのif文は
+    // 'hoge'なんて引数の配列の中に存在しないのでfalseが返るよね！
       if (array_search('hoge', [1, 2, 3, 0])) {
         echo 'match!';
         return;

@@ -7,36 +7,29 @@ tags: PHP
 
 どうも。来月結婚する@dekokunです。タイトルで言いたいことは全て言っているのですが、まぁ詳細書きます。
 
-## 導入
+## 導入 array_searchとは
 
-PHPのarray_searchは配列の中に値が存在するかどうかを判定し、存在したらその値が最初にマッチしたインデックスを返す関数です。
-以下は本題ではありませんがまずは肩慣らしとして、「array_searchのバグじゃないか」としてよく言われる挙動を見ておきましょう。
+> 指定した値を配列で検索し、見つかった場合に対応するキーを返す
+
+参照：[array_search](http://www.php.net/manual/ja/function.array-search.php)
 
     <?php
-    
-    function test() {
-      // 1は引数の配列の中に存在するし"match"が出力されるよね
-      if (array_search(1, [1, 2, 3])) {
-        echo 'match!';
-        return;
-      }
-      echo 'not match!';
-    }
+    array_search(1, [2, 3, 4, 1]); => 3
+    // インデックス3の値が1なので、3が返ってきた
+    array_search(1, [2, 1, 4, 1]); => 1
+    // 複数マッチした場合は最初にマッチした値を返す
 
-    test();
-    // => "not match!"が出力される！！！
+という感じですね。
 
-上記、PHPによく慣れている方は、すぐに「あ、検索する値が配列の0番目にあったのでarray_searchの返り値が0になりfalse判定されたんですね」とわかるかと思います。
-はい、上記はまだ序の口です。というか、PHPを書いていればあまりにも普通のことです。
 
 ## 本題
 
-では、以下はわかりますでしょうか
+以下array_searchの挙動を見ましょう。
 
     <?php
     
     function test() {
-    // 'hoge'なんて引数の配列の中に存在しないのでfalseが返るよね！
+      // 'hoge'なんて引数の配列の中に存在しないのでfalseが返るよね！
       if (array_search('hoge', [1, 2, 3, 0])) {
         echo 'match!';
         return;
@@ -77,6 +70,28 @@ array_searchにはstrictフラグという、値の比較の際に型の一致(�
     // やった！これからはちゃんとstrictにしよう！！！
 
 めでたしめでたしなのでしたー！！！
+
+## 本題とは関係ないけどarray_searchについて
+
+array_searchについて学んだついでに、上記の他に「array_searchのバグじゃないか」としてよく言われる挙動を見ておきましょう。
+
+    <?php
+    
+    function test() {
+      // 1は引数の配列の中に存在するし"match"が出力されるよね
+      if (array_search(1, [1, 2, 3])) {
+        echo 'match!';
+        return;
+      }
+      echo 'not match!';
+    }
+
+    test();
+    // => "not match!"が出力される！！！
+
+上記、PHPによく慣れている方は、すぐに「あ、検索する値が配列の0番目にあったのでarray_searchの返り値が0になりfalse判定されたんですね」とわかるかと思います。
+まぁ、こちらはわかりやすいですかね。PHPを書いていればあまりにも普通のことです。
+
 
 ## あとがき
 

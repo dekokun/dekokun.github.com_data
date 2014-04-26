@@ -101,3 +101,12 @@ PHPの曖昧さとうまく付き合っていく方法が未だによくわか�
 あ、「来月結婚する」って書いたけど正確には入籍は一年くらい前に終わっていて、来月あるのは挙式です。
 
 1年半前から毎月1記事は書こうと頑張っていたが結婚準備でかなりバタバタしており、「4月は頑張らないと」と思っていたのですが、まぁブログは予定通り書けてよかったです。
+
+## このブログを140文字で伝えると
+
+以下私のツイート
+
+<blockquote class="twitter-tweet" lang="ja"><p>PHPの array_searchですが、返り値が0になりうるのでfalseと判定されて云々という話ばかりでてくるが本当にやばいのはheystackの中に0などが入っている時にneedleが文字列の場合ですよね。0でマッチしちゃう。strictフラグ立てましょう。</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/statuses/460018910545203200">2014, 4月 26</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+

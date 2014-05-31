@@ -13,20 +13,21 @@ MySQL5.6.5から、DATETIME型でも行の生成時刻と更新時刻を自動�
 
 ## 方法
 
-作成時刻は DATETIME DEFAULT CURRENT_TIMESTAMP で
+作成時刻は DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP で
 
-更新時刻は DATETIME ON UPDATE CURRENT_TIMESTAMP で宣言しましょう
+更新時刻は DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP で宣言しましょう
 
 参照：[How do you set a default value for a MySQL Datetime column?](http://localhost/posts/2014-05-31.html)
 
-以下、MySQL5.6.13で検証
+以下、MySQL5.6.17で検証
 
 ### テーブル生成
 
     mysql> CREATE TABLE foo (
              `id` INT(11),
-             `creation_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
-             `modification_time` DATETIME ON UPDATE CURRENT_TIMESTAMP
+             `creation_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+             `modification_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+             PRIMARY KEY (id)
            );
     Query OK, 0 rows affected (0.12 sec)
 
@@ -34,43 +35,36 @@ MySQL5.6.5から、DATETIME型でも行の生成時刻と更新時刻を自動�
 
      
     mysql> insert into foo (id) VALUES (1);
-    Query OK, 1 row affected (0.02 sec)
-     
+    Query OK, 1 row affected (0.00 sec)
+    
     mysql> select * from foo;
-    +------+---------------------+-------------------+
-    | id | creation_time | modification_time |
-    +------+---------------------+-------------------+
-    | 1 | 2014-01-30 15:09:00 | NULL |
-    +------+---------------------+-------------------+
+    +----+---------------------+---------------------+
+    | id | creation_time       | modification_time   |
+    +----+---------------------+---------------------+
+    |  1 | 2014-05-31 21:25:09 | 2014-05-31 21:25:09 |
+    +----+---------------------+---------------------+
     1 row in set (0.00 sec)
+
      
 
 ### 更新時刻自動挿入のテスト
 
     mysql> update foo set id = 2;
-    Query OK, 1 row affected (0.03 sec)
-    Rows matched: 1 Changed: 1 Warnings: 0
-     
+    Query OK, 1 row affected (0.00 sec)
+    Rows matched: 1  Changed: 1  Warnings: 0
+
     mysql> select * from foo;
-    +------+---------------------+---------------------+
-    | id | creation_time | modification_time |
-    +------+---------------------+---------------------+
-    | 2 | 2014-01-30 15:09:00 | 2014-01-30 15:09:28 |
-    +------+---------------------+---------------------+
+    +----+---------------------+---------------------+
+    | id | creation_time       | modification_time   |
+    +----+---------------------+---------------------+
+    |  2 | 2014-05-31 21:25:09 | 2014-05-31 21:25:59 |
+    +----+---------------------+---------------------+
     1 row in set (0.00 sec)
 
-なお、同様のことはもちろんMySQL5.5では設定できません。
-
-    MySQL5.5
-    mysql> CREATE TABLE foo ( `id` INT(11), `creation_time` DATETIME DEFAULT CURRENT_TIMESTAMP, `modification_time` DATETIME ON UPDATE CURRENT_TIMESTAMP );
-    ERROR 1067 (42000): Invalid default value for 'creation_time'
-     
 
 ## 注意
 
-上記、modification_timeは、行を挿入しただけではNULLになるので注意
+この設定が性能面にどのような影響をあたえるかは検証しておりません。
 
-また、この設定が性能面にどのような影響をあたえるかは検証しておりません。
-
-
+あれ、以前MySQL5.6.13くらいで検証した時はDEFAULT CURRENT_TIMESTAMPを2カラムに設定できなかったような記憶があるが5.6.17ではできているな。
 

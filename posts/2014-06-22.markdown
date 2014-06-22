@@ -7,7 +7,7 @@ tags: PHP, composer
 
 ## 概要
 
-composer installには--optimize-autoloaderオプションつけたほうが若干早くなるよ。
+composer installには--optimize-autoloaderオプションつけたほうが若干アプリケーションの性能が上がるよ。
 もしくは、composer installした後にcomposer dumpautoload -oするか。
 
 ## なぜか

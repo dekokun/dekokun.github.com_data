@@ -15,9 +15,9 @@ composer installには--optimize-autoloaderオプションつけたほうが若�
 composerが自動生成するautoloaderは、以下の順番でクラスファイルを探していくんですね。
 
 1. vendor/composer/autoload_classmap.php(以下、classmapファイルと記載)ファイルの中にクラス及びそのファイルの定義があればそのファイルをinclude
-2. 上記なければそのファイルの存在をまぁいろいろ検索してファイルの存在まで確認してinclude
+2. 上記なければそのファイルをまぁいろいろ検索してファイルの存在まで確認して存在すればinclude
 
-というわけでclassmapファイルにいろいろ書いてあると基本的に高速化される模様なのですが、classmapファイルはデフォルトでは空の配列を返す感じになっているのです。
+というわけでclassmapファイルにいろいろ書いてあるとファイルの検索部分が省略され基本的に高速化される模様なのですが、classmapファイルは、普通にcomposer installを行っただけでは空の配列を返す感じになっているのです。
 
 以下のような感じです。
 
@@ -31,7 +31,7 @@ composerが自動生成するautoloaderは、以下の順番でクラスファ�
     return array(
     );
 
-ではどうすればいいかというと、表題のようにcomposer install時に --optimize-autoloaderオプションをつければいいのです。つけると以下のような感じに、クラス名とファイル名を対応させる感じの記述が増えます。
+ではどうすればいいかというと、表題のようにcomposer install時に --optimize-autoloaderオプションをつければいいのです。つけると以下のように、クラス名とファイル名を対応させる記述が増えます。
 
     <?php
     
@@ -52,7 +52,7 @@ composerが自動生成するautoloaderは、以下の順番でクラスファ�
 
 ## 実際の効果
 
-* Moufというフレームワークでhello worldするWebアプリのレスポンスが37%早くなったという話
+* 上記最適化を行うことでMoufというフレームワークでhello worldするWebアプリのレスポンスが37%早くなったという話
     * [Optimizing Composer's autoloader performance](http://mouf-php.com/optimizing-composer-autoloader-performance)
 
 実際に自分でもやってみました。
@@ -75,12 +75,13 @@ composerが自動生成するautoloaderは、以下の順番でクラスファ�
 
 何回かやりましたが全部こんなかんじでしたので、まぁある程度正しいんでしょうが、かなり適当に計測しているというのはご了承ください。
 
-なお、Composerが生成するautoloaderにおいてクラス名の最初の一文字というのは非常に重要なのですが、今回全てTestから始まるクラス名だったため、あまりにもこの計測は実態から乖離しまくっているなとは思いました。
+なお、2014/06/23時点で、Composerが生成するautoloaderにおいてクラス名の最初の一文字というのは非常に重要(クラス名の一文字目を検索の最初のフィルタリングのキーとして使っている)なのですが、今回全てTestから始まるクラス名だったため、あまりにもこの計測は実態から乖離しまくっているなとは思いました。
 
 ## 結論
 
 composer install --optimize-autoloader をしよう
 ただ、まぁ、若干composer installにかかる時間が長くなる
+
 
 ## 自分が行ったテストについて
 

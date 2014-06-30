@@ -81,6 +81,9 @@ main = hakyllWith config $ do
         requireAll_ "posts/*"
             >>> mapCompiler (arr $ copyBodyToField "description")
             >>> renderRss feedConfiguration
+    match "img/*" $ do
+            route   idRoute
+            compile copyFileCompiler
   where
     renderTagCloud' :: Compiler (Tags String) String
     renderTagCloud' = renderTagCloud tagIdentifier 100 120

@@ -1,0 +1,55 @@
+---
+title: xhprofって実行時間だけじゃなくてメモリとかCPU使用率のプロファイリングとかもしてくれるんだね知らなかった
+author: @dekokun
+date: 2014/07/01 00:28
+tags: PHP, xhprof
+---
+
+## 概要
+
+xhprof_enable関数の引数にいろいろ指定できた
+
+## 詳細
+
+xhprof_enableの引数に、XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORYとか指定してあげて色々動きが変わる
+
+* XHPROF_FLAGS_NO_BUILTINSは、ビルトイン関数がプロファイルに出力されない
+* XHPROF_FLAGS_CPUは、CPU使用率のプロファイルが出力される
+    * どうやって計測しているんだろうか
+    * DBにクエリを投げたりするメソッドはやはりTimeが高くてもこの値は低くなったりするんだろうなぁ。検証が必要
+* XHPROF_FLAGS_MEMORYは、メモリ使用率のプロファイルが出力される
+    * こちらは、メソッド呼び出し前後のメモリ使用量を測定して計算しているということかな？
+
+なお、第二引数で、無視する関数を指定したりできるらしい。
+
+詳細は以下
+
+[xhprof_enable](http://www.php.net/manual/ja/function.xhprof-enable.php)
+
+### XHPROF_FLAGS_NO_BUILTINSの効果
+
+before (ビルトイン関数のfile_existsがグラフに出てきていますね)
+
+![XHPROF_FLAGS_NO_BUILTINS前](/img/2014-07-01-file_exists-before.png)
+
+after(ビルトイン関数のfile_existsがグラフに出てこなくなりました)
+
+![XHPROF_FLAGS_NO_BUILTINS後](/img/2014-07-01-file_exists-after.png)
+
+### XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORYの効果
+
+before(まぁ、よく見る普通の光景)
+
+![XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORY前](/img/2014-07-01-memory-cpu-before.png)
+
+after(カラムがゴサっと色々増えた！！)
+
+![XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORY後](/img/2014-07-01-memory-cpu-after.png)
+
+## 雑談
+
+これまでxhprofは実行時間の計測のためだけに使っていた(というか、他も計測できるの知らなかった)のですが、マニュアル見たらそれだけじゃなかったのでビビってやってみたらいろいろでてきた。ビビった。
+
+ただ、CPUのプロファイルの部分など、もうちょっと検証は必要。
+
+このブログで画像をちゃんと管理するために久しぶりにHaskell書いた(コピペ)

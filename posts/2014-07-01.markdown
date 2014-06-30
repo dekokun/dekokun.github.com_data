@@ -52,4 +52,7 @@ after(カラムがゴサっと色々増えた！！)
 
 ただ、CPUのプロファイルの部分など、もうちょっと検証は必要。
 
+<blockquote class="twitter-tweet" lang="ja"><p>getrusageで使用するユーザー時間がとれるからそこからCPUの部分を取得している感じなのかな。</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/statuses/483646255055110145">2014, 6月 30</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 このブログで画像をちゃんと管理するために久しぶりにHaskell書いた(コピペ)

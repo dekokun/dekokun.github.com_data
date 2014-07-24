@@ -1,0 +1,53 @@
+---
+title: PHPにおけるタイプヒンティングでのClosureとcallableの違い
+author: @dekokun
+date: 2014/07/25 00:26
+tags: PHP, タイプヒンティング
+---
+
+## 概要
+
+Closureとcallable、どちらも無名関数に使えるタイプヒンティングなのですが、callableは無名関数以外でも関数名とかでもいけるけどClosureはそういうのいけないよという話。
+
+@do_aki氏に感謝
+
+## 詳細
+
+<blockquote class="twitter-tweet" lang="ja"><p>PHPのタイプヒンティングで\Closureって書くのとcallableって書くのってどう違うんだっけと思ったけどもClosureは今後のバージョンで名前が変わる可能性があるから使うなって感じなのか。</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/statuses/491446139527233536">2014, 7月 22</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" lang="ja"><p><a href="https://twitter.com/dekokun">@dekokun</a> 5.5 あたりから、Closure ベースで良いよって事になってたはず。</p>&mdash; どぅーあき (@do_aki) <a href="https://twitter.com/do_aki/statuses/491447179337150465">2014, 7月 22</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" lang="ja"><p><a href="https://twitter.com/dekokun">@dekokun</a> <a href="http://t.co/mZdkKiY3EH">http://t.co/mZdkKiY3EH</a></p>&mdash; どぅーあき (@do_aki) <a href="https://twitter.com/do_aki/statuses/491447723892015106">2014, 7月 22</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" lang="ja"><p><a href="https://twitter.com/dekokun">@dekokun</a> うんにゃ。 callable だと、文字列(関数名)や array (クラス名/インスタンスとメソッド名) も受け付けるよ。</p>&mdash; どぅーあき (@do_aki) <a href="https://twitter.com/do_aki/statuses/491468144959975424">2014, 7月 22</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+    <?php
+    
+    function callableTest(callable $func) {
+    }
+    function closureTest(\Closure $func) {
+    }
+    
+    callableTest('printf'); // 問題なし
+    closureTest('printf'); // PHP Catchable fatal error:  Argument 1 passed to closureTest() must be an instance of Closure, string given
+    
+    class Hoge {
+      public function hoge() {
+      }
+    }
+    
+    $hoge = new Hoge();
+    
+    callableTest([$hoge, 'hoge']); // 問題なし
+    closureTest([$hoge, 'hoge']); // PHP Catchable fatal error:  Argument 1 passed to closureTest() must be an instance of Closure, string given
+    
+    callableTest(function() {}); // 問題なし
+    closureTest(function() {}); // 問題なし
+
+## あとがき
+
+@do_akiさんありがとう
+
+Twitterさんありがとう

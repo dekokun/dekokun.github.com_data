@@ -1,4 +1,9 @@
-# CEDEC AI CHALLENGE 決勝に参加して来ます
+---
+title: CEDEC AI CHALLENGE 決勝に参加して来ます
+author: @dekokun
+date: 2014/08/31 12:56
+tags: PHP
+---
 
 ## 概要
 

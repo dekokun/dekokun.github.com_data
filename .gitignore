@@ -3,3 +3,4 @@ _cache/
 *.hi
 *.o
 gh-pages
+node_modules/

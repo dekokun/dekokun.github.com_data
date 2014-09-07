@@ -122,6 +122,6 @@ tags: PHP, contest
 
 ## 最後に
 
-- 運営の方が、この対戦に使用される絵を描いていただける絵師さんを募集しているそうです
+- 運営の方が、この対戦に使用される絵([スクリーンショット](http://www.ai-comp.net/cedec2014/#screenshots))を描いていただける絵師さんを募集しているそうです
 - コードはこちら https://github.com/dekokun/CEDECAI
 - このブログ、めちゃ長いな

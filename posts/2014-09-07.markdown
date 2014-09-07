@@ -1,8 +1,8 @@
 ---
 title: PHPを使ったり4000円課金したりしてCEDEC AI CHALLENGE 準優勝に至るまでの軌跡
 author: @dekokun
-date: 2014/08/31 12:56
-tags: PHP
+date: 2014/09/08 00:07
+tags: PHP, contest
 ---
 
 ## 概要

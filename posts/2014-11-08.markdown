@@ -1,0 +1,59 @@
+---
+title: #isucon 2014で11位でした
+author: @dekokun
+date: 2014/11/08 23:48
+tags: contest
+---
+
+## 概要
+
+[第4回 ISUCON](http://isucon.net/)の本選に、参加しました。去年に引き続き予選突破しての本選出場だったのですが、去年の本選は0点での敗北だったのですが、今年は30組中11位で、まぁ、去年よりは良かったよねという感じになりました。
+
+[@ikemonn](https://twitter.com/ikemonn) と[@MiuraKatsu](https://twitter.com/MiuraKatsu)の3人チームでの出場でした。
+
+## やったこと
+
+- フロントのサーバを2台にして、redisに突っ込んでいた動画ファイルはフロントのファイルとして起き、nginxに直接配信させる
+- 残り1台(1コアだったやつ)を、動画以外のデータを保存するためのredisサーバとして使用
+- 他にもいろいろやって、そのおかげでアプリケーション内の遅い部分はどんどん移り変わっていったのですが、何しろボトルネックは別に存在たため、ただ単にどんどんCPUを食わなくなっていっただけで、クライアント側のキャッシュについては全く気付かず、まぁ、なんというか…1位の1/80ほどの得点だったのでした…
+
+## 思ったこと
+
+- ベンチマークにキャッシュさせてリクエスト自体を発生させなくしないとスコアが全然伸びない件、意識の外側から刈り取られた感じがすごかった
+    - まさかベンチマークツールがブラウザ同様にキャッシュ機構を持っているとは…
+- 思考に枠をはめていたなぁと強く思わされた
+- 非常に悔しくて悔しくて…
+- AMI公開されたら、自分のやった変更をあてた状態でクライアント側のキャッシュ部分だけ書きなおしてどれだけ変わるのか試してみます
+
+## PHPの復権を賭けた戦い
+
+チーム名は「PHPに花束を」です。
+
+<blockquote class="twitter-tweet" lang="ja"><p>PHPに花束を、暫定一位をとってます！！！！キテマスキテマス！！！！！！！！！ ドローンゲットだぜ！！！！！  <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/530972038140157953">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="ja"><p>まだ暫定一位だ！！！PHPに花束を捧げたい！！！！  <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/530985894753206273">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="ja"><p>よっしゃーなんか知らんが一位に返り咲いた！！！ <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/531002260440903680">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="ja"><p>暫定一位が「PHPに花束を」だ…これはもしやPHPの復権の時？ <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; Mr. Fiber (@repeatedly) <a href="https://twitter.com/repeatedly/status/531003537375784960">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="ja"><p>我々のチーム、PHP復権を狙っております。 <a href="https://twitter.com/hashtag/isucon?src=hash">#isucon</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/531009166916067328">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="ja"><p>PHPの復権ならず…！！</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/531061960196907009">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="ja"><p>辛すぎてレゴで名前を作った。 <a href="http://t.co/IYo0MdLrZj">pic.twitter.com/IYo0MdLrZj</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/531061395098312704">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## 次回
+
+- 次こそは優勝したいです
+
+<blockquote class="twitter-tweet" lang="ja"><p>まぁ、去年の本戦の結果は0点だったし、無限倍の成長をしたということでここはひとつ…</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/531073933227728896">2014, 11月 8</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+

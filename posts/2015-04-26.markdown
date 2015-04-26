@@ -1,0 +1,37 @@
+---
+title: Erlang書きはじめた
+author: @dekokun
+date: 2015/04/26 22:26
+tags: Erlang
+---
+
+すごいErlang本を1ヶ月くらいかけてひと通り読み終わったので、何か作らにゃいかんと思っていたら社内でWebSocketのリアルタイムほげほげ系開発ツールの話が出てきたため、一旦作ってみるかという感じでまずはWebSocketを使って云々なやつをさっきから作り始めた。
+
+まだ1時間くらいの進捗だけ(というよりは、ほとんど何も進んでいない)だが、かなり雑にハマったことを以下に記述する。
+
+## 参考にしたもの
+
+- [すごいErlangゆかいに学ぼう!](http://www.google.co.jp/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CB8QFjAA&url=http://www.amazon.co.jp/%E3%81%99%E3%81%94%E3%81%84Erlang%E3%82%86%E3%81%8B%E3%81%84%E3%81%AB%E5%AD%A6%E3%81%BC%E3%81%86-Fred-Hebert/dp/4274069125&ei=5Og8Vc_zM4K5mwWB0oHQCA&usg=AFQjCNEZHrq06TFgh4Ojj7sx8dPQRjKtbQ&sig2=73m-9UP9uLSPkri56S7d5g&bvm=bv.91665533,d.dGY)
+- [Erlang WebサーバCowboy - WebSocket編](http://clina.jp/blog/cowboy-websocket.html)
+
+すごいErlang本、すごいHaskell本と比べても非常に情報量が多く、実践的な内容が大量にあって素敵だった。
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=dekokun-22&o=9&p=8&l=as1&m=amazon&f=ifr&ref=qf_sp_asin_til&asins=4274069125" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+## ハマった点
+
+初めてのErlangなのですが、なんかよくわからんところでよくコケている
+
+参考URL([Erlang WebサーバCowboy - WebSocket編](http://clina.jp/blog/cowboy-websocket.html))にweb socketのサンプルの作り方があったのでそれ通りプログラムを作成したんだけど、makeしても参考URLに記載の実行コマンド、`./_rel/message_wall_release/bin/message_wall_release`なぞというファイルは存在しない。何が起きているのかよくわからんかったのですが、しょうがないので以下のように起動していた。
+`erl -pa message_wall/ebin message_wall/deps/*/ebin` -> `{ok, _} = application:ensure_all_started(message_wall).`
+
+なお、最初はmessage_wallディレクトリ内で上記erlコマンドを実行したりしていたんだけど、"priv_dirが存在しねぇぜ"みたいなエラーが出てて、そういえばディレクトリ構造大切だったねと思い出して一つ上のディレクトリで起動したらうまくいった。デバッグの過程で`code:priv_dir/1`を覚えた。
+
+後でMakefile(erlang.mk)みてたらbootstrap-relターゲットがあったので`make bootstrap-rel`打ってみたらmakeで`./_rel/message_wall_release/bin/message_wall_release` ができてた。めでたい。
+
+## 感想
+
+この雑な記事、感想も何もないのですが、まぁ、上記「WebSocketのリアルタイムほげほげ系開発ツールの話」が続く限りは今後も制作過程を書いていけたらと思います。多分。
+
+ここ数週間は、は会社でひたすらChefのcookbookを書いてはサーバを構築していて、それも非常に楽しいのですがプログラムを書くのも好きです(まだこの段階では写経をして動く段階まで持っていっただけだけど)
+

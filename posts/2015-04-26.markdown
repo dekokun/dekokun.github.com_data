@@ -25,7 +25,7 @@ tags: Erlang
 参考URL([Erlang WebサーバCowboy - WebSocket編](http://clina.jp/blog/cowboy-websocket.html))にweb socketのサンプルの作り方があったのでそれ通りプログラムを作成したんだけど、makeしても参考URLに記載の実行コマンド、`./_rel/message_wall_release/bin/message_wall_release`なぞというファイルは存在しない。何が起きているのかよくわからんかったのですが、しょうがないので以下のように起動していた。
 `erl -pa message_wall/ebin message_wall/deps/*/ebin` -> `{ok, _} = application:ensure_all_started(message_wall).`
 
-なお、最初はmessage_wallディレクトリ内で上記erlコマンドを実行したりしていたんだけど、"priv_dirが存在しねぇぜ"みたいなエラーが出てて、そういえばディレクトリ構造大切だったねと思い出して一つ上のディレクトリで起動したらうまくいった。デバッグの過程で`code:priv_dir/1`を覚えた。
+なお、最初はmessage_wallディレクトリ内で上記erlコマンドを実行したりしていたんだけど、"priv\_dirが存在しねぇぜ"エラー(Can't resolve the priv_dir of application message_wall)が出てて、そういえばディレクトリ構造大切だったねと思い出して一つ上のディレクトリで起動したらうまくいった。デバッグの過程で`code:priv_dir/1`を覚えた。
 
 後でMakefile(erlang.mk)みてたらbootstrap-relターゲットがあったので`make bootstrap-rel`打ってみたらmakeで`./_rel/message_wall_release/bin/message_wall_release` ができてた。めでたい。
 

@@ -13,6 +13,9 @@ Markdownを入力するとそれをレンダリングしたものが表示され
 まぁ、よくあるやつの超機能劣化バージョンっていう感じです。
 
 - 動いてるやつ: [erlang editor](http://erl-editor.herokuapp.com/)
+
+2つのタブで上記ページを開いて適当に編集するともうひとつのタブに即時反映されていくのが見えるはずです
+
 - github: [dekokun/erl_editor](https://github.com/dekokun/erl_editor)
 
 

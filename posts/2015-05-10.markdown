@@ -1,0 +1,71 @@
+---
+title: Erlangで一旦何か作ってみた
+author: @dekokun
+date: 2015/05/10 15:46
+tags: Erlang, WebSocket, Heroku
+---
+
+前回のブログ「[Erlang書きはじめた](http://dekokun.github.io/posts/2015-04-26.html)」で何か作っていたと思いますが、一旦雑ながらもそれっぽいものができたので公開します。
+
+## 何作ったの？
+
+Markdownを入力するとそれをレンダリングしたものが表示され、同じページを開いている他の人のところにも反映されて、同時編集っぽいことが出来る感じです。
+まぁ、よくあるやつの超機能劣化バージョンっていう感じです。
+
+- [erlang editor](http://erl-editor.herokuapp.com/)
+
+サーバサイドはErlang + Cowboyで静的ページ配信及びWebsocketサーバとして動いており、クライアントサイドはReact.jsでマークダウン変換する感じです
+
+## 使っているもの ライブラリとか言語とかPaaSとか
+
+### サーバサイド
+
+- Erlang
+    - [Cowboy](https://github.com/ninenines/cowboy)
+- Heroku
+    
+### クライアントサイド
+
+- JavaScript
+    - [React](https://github.com/facebook/react)
+    - [md2react](https://github.com/mizchi/md2react)
+        - md2reactのplaygroundをほぼそのまま使わせてもらっています
+    - [browserify](http://browserify.org/)
+    - [CoffeeScript](http://coffeescript.org/)
+        - md2reactのplaygroundがcoffeeで書かれていたので全部をそのままcoffeeで書きました
+        - 久しぶりに三項演算子の罠にハマった。coffeeには三項演算子はない
+
+## 大変だったところ
+
+- HerokuでErlang動かすの、少し詰まると一気にどうやればいいのか全然わからなくなって大変だった。code:priv_dir/1が{error, bad_name}返すなぁとか、そもそもcompileできないなぁとか
+    - 結果、依存ライブラリの情報がrebar.configとMakefileに重複している…
+    - [erlang.mk](https://github.com/ninenines/erlang.mk)ファイルを使っていて、そもそもErlangがどうやってcompileされてリリースまで行っているのかもよくわからず、すごいErlang本のリリースの章を読みなおしたりしていた
+    - 手元のforemanでは動くのにherokuでは動かんなぁとかもあって厳しかった。
+    - [heroku-erlang-example](https://github.com/6/heroku-erlang-example)や[Heroku 上で WebMachine (Erlang) を動かす](http://voluntas.hatenablog.com/entry/20111218/1324167999)を参考にさせていただきました。安心のvoluntasさんブログ
+- erlang自体は、何も考えずに「とにかく動けばいい」というスタンスで全く以って大したことを行っていないためそんなに大変なことはなかった
+    - コードをupdateする際にプロセスを殺さずにupdateするとかそういうことは一切やっていないため、まぁ、なんでErlang使っているのみたいなところはある
+    - あと、負荷試験なども全くやっていないのでどんな問題が起き得るかも分かっていない
+
+## Herokuでの学び
+
+- Procfileのデバッグにはforemanを使おう
+- 複数のbuildpackを使用したいときは[buildpack-multi](https://github.com/ddollar/heroku-buildpack-multi)を使おう
+
+## 雑なところ
+
+- 編集対象のルーム的なやつが1つしかない
+- Markdownを複数人で同時に編集した場合、他の人の編集内容を適用するアルゴリズムが「全てを送り、送られてきた全てをそのまま上書きする」というもののため、盛大に変更内容がバッティングしすぐにめちゃくちゃになる。ちゃんと差分を送るようにしないとダメだ
+    - 差分、せっかくReact使っているんだし、実はReactの差分DOMをおくればいいんじゃないかという気もしたがそれをちゃんと動かすとするとhtmlからmarkdownに変換するやつも必要になったりするよねー
+- 他の人の編集によってMarkdownが変更された際にキャレット位置を保持するように少し頑張りましたが、雑なのでイマイチな動きをします。textareaの先頭からなん文字目かを保持してその位置に戻しているため、キャレット位置より手前を編集されると死ぬ
+- データはETSがメモリ上に保持しているだけなのでいとも簡単にデータが消える
+- あと、妻のAndroid端末で試してみたら動かなかった
+
+## 感想
+
+作っているものの先にはそんなに可能性が感じられないので、このプログラムはこれからは特に進展はないと思う。
+差分解決アルゴリズムだけちょっとなんとかしたい感じはある
+
+今日は結婚一年目です。八芳園で結婚式を挙げたのですが、アニュアルレターっていう、毎年夫婦がそれぞれお互いへのメッセージを書いていく本をもらったので今年も書きました。
+50年分あります。50歳まで、いやもっと仲良く過ごせるといいですね。
+
+これから、八芳園で夕ごはん食べていきます。

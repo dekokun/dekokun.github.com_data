@@ -12,7 +12,9 @@ tags: Erlang, WebSocket, Heroku
 Markdownを入力するとそれをレンダリングしたものが表示され、同じページを開いている他の人のところにも反映されて、同時編集っぽいことが出来る感じです。
 まぁ、よくあるやつの超機能劣化バージョンっていう感じです。
 
-- [erlang editor](http://erl-editor.herokuapp.com/)
+- 動いてるやつ: [erlang editor](http://erl-editor.herokuapp.com/)
+- github: [dekokun/erl_editor](https://github.com/dekokun/erl_editor)
+
 
 サーバサイドはErlang + Cowboyで静的ページ配信及びWebsocketサーバとして動いており、クライアントサイドはReact.jsでマークダウン変換する感じです
 

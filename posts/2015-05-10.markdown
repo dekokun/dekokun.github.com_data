@@ -39,6 +39,8 @@ Markdownを入力するとそれをレンダリングしたものが表示され
     - [CoffeeScript](http://coffeescript.org/)
         - md2reactのplaygroundがcoffeeで書かれていたので全部をそのままcoffeeで書きました
         - 久しぶりに三項演算子の罠にハマった。coffeeには三項演算子はないのにエラーにならない。恐ろしい。if then elseを使おう
+    - [licensify](https://github.com/twada/licensify)
+        - 後から追加。browserifyで結合されたファイルの先頭にnpmでインストールされたライブラリのライセンスを埋め込んでくれる
 
 ## 大変だったところ
 

@@ -5,7 +5,7 @@ date: 2015/06/03 8:17
 tags: TCP
 ---
 
-こんな理解でいいんですか。教えてください。あと、Nagleアルゴリズムについては後で書く
+こんな理解でいいんですか。教えてください。あと、Nagleアルゴリズムについて詳細は後で書く
 
 <blockquote class="twitter-tweet" lang="ja"><p lang="ja" dir="ltr">NagleアルゴリズムとTCP遅延ACKとTCP CORK覚えた。 / “nginxのパフォーマンスチューニング // Speaker Deck” <a href="http://t.co/HbOKeoNQc8">http://t.co/HbOKeoNQc8</a></p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/605820330729349121">2015, 6月 2</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -15,3 +15,10 @@ tags: TCP
 
 <blockquote class="twitter-tweet" lang="ja"><p lang="ja" dir="ltr">まぁ、そこはnginxがよしなにやってくれるわけなのかな。TCP_NODELAYとTCP_CORKの組み合わせは、パケット送信タイミングの最適化をカーネルに任せずにアプリケーション(今回はnginx)に任せるってことという理解でいいのかな。</p>&mdash; でこくん (@dekokun) <a href="https://twitter.com/dekokun/status/605823744972455939">2015, 6月 2</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## Nagleアルゴリズム
+
+非常に雑に書いている。後でちゃんと書きたい
+
+- なるべく複数のTCP通信を1回にまとめちゃおうというアルゴリズム
+- パケット数の減少によるヘッダ容量の削減及び輻輳の回避を狙っている模様

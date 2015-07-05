@@ -1,0 +1,96 @@
+---
+title: バックエンドにAWS Lambdaを使ってサーバレスな動的サイトを作った
+author: @dekokun
+date: 2015/07/05 8:17
+tags: AWS
+---
+
+どうも。[もう一つのブログの方に書いていた](http://dekolife.hatenablog.com/entry/2015/07/03/153402)のですが、東京から京都まで歩いて行くことになりまして、私の位置情報が把握しやすいようにサイトを作りました。なお、明日(7/6)出発します
+
+- [京都まで歩こう](http://twittermap.dekokun.info/)
+
+このためだけにサーバ代を払うのは馬鹿らしいと思いまして、なんとかサーバを構築せずにある程度安く済ませることはできないかと考えた結果、バックエンドをAWS Lambdaに任せてサイト自体はS3上に構築するという形にしました。
+
+なお、「バックエンドをAWS Lambdaに任せた」といった場合、普通はクライアントのAWS SDKからLambda関数をキックするようなものになるかと思いますが、今回はLambda関数を無限ループのバッチ的に使い、クライアントはS3を経由してその結果を取得するような作りにしています。詳しくは以下。
+
+## 構成
+
+以下図をみてもらったほうが早いかもしれませんが、以下のとおりです。
+
+### バックエンド
+
+[AWS Lambdaをcronの代わりに使ってみるよ](http://qiita.com/toritori0318/items/3ab95e94c5fc47530447)を参考にしています。
+
+1. AWS Lambdaを最初に手動でキックする
+1. 登録してあるLambda関数が動きtwitterのAPIから私のtweetを取得、Web用のS3 bucketにjson形式でアップロードする
+1. 上記Lambda関数が最後にLambda用のS3 bucketにファイルをアップロードする
+1. Lambda用のS3 bucketへのファイルアップロードイベントがLambdaに通知される (2. に戻る。無限ループ)
+
+### フロントエンド
+
+1. ブラウザがS3からindex.htmlを取得
+1. index.htmlのJSから定期的にLambdaによってアップデートされたjsonファイルを取得して地図に反映
+
+### 構成図
+
+![](/img/2015-07-05-aws-lambda.png)
+
+
+## 料金
+
+大雑把に言うとS3のデータ転送量及びデータへのリクエスト数と、Route53のクエリ数、Lambda関数の実行回数と実行時間に対して料金がかかっていますが、Lambda関数は月の無料枠に収まるレベルになっておりまして、これからの転送量にもよりますが、現在はだいたい1日あたり0.05ドルな感じです。月に1.5ドルくらいでこんな環境ができるなんて嬉しいですね。
+
+S3へのPUTリクエスト数による課金が比較的高いです。現在、tweets.jsonは以前と内容が同じでも毎回S3にtweets.jsonをPUTしているのですがそれをなくせば更に安くなる模様。もう明日の朝には京都に向けて出発するのでそちらを修正するのはやめておきます。
+
+## Lambdaで良かったこと
+
+### テストが結構簡単
+
+例えばindex.jsのhandlerを登録しているような環境のテストがしたい場合は、手元の環境でLambda関数に渡しているロールとと同じ権限を付与して、以下みたいな形で簡単にテストできます。いいね！
+
+    var main = require('./index');
+    var context = {done: function(var1, var2) {console.log(var1), console.log(var2)}}
+    main.handler('イベントデータ', context);
+
+### デプロイが結構簡単
+
+以下のコマンドを実行するだけでデプロイできちまうので非常に簡単でした。
+
+`rm -f lamda.zip && zip -r lambda.zip index.js node_modules && aws lambda update-function-code --function-name 関数名どうぞ --zip-file fileb://./lambda.zip --region ap-northeast-1 | jq '.'`
+
+`npm run deploy`で実行できるようにして超楽だった。npmのscripts便利。
+
+## Lambdaでハマったところ
+
+結構ハマりどころは多かったです。まぁ、一度わかると超便利ではあるのですが…なかなか…
+
+### sourceを指定してなかった
+
+Lambda関数を登録するだけ登録して、event sourceを追加せず、「自分でinvokeするとうまくうごくけどS3にファイルをアップロードしても動かないなぁ」「ってか、全てのS3へのイベントが全部通知されるのか！やばいな！！」と悩みました。そんなわけありませんでした。
+
+Management ConsoleのLambdaのところからAction -> Add event source で必要なイベントソース(今回だと、S3のlambda用bucketへのPUTの通知)を追加することで動くようになりました。
+
+### zipにする際にフォルダごとzipにしてて怒られた
+
+Lambda関数はzipをアップロードして登録することができるのですが、その際に、最初はindex.jsが存在しているディレクトリごとzipコマンドにかけてアップロード(例： `zip -r lambda.zip lambda_dir`)していたのですがそれではダメで、`zip -r lambda.zip index.js node_modules`みたいに、直接index.jsをzipしてあげる必要があります。
+
+まぁ、そりゃ、アップロードされる側もzipされたディレクトリの名前なんて知らねぇでしょうし当然といえば当然なのですが、少し悩んだ。
+
+### S3にputobjectする際にACLをいじろうとしたら失敗した
+
+Lambda関数、登録する時にその関数が動く際の権限をroleで付与するのですが、結構賢くて「S3に何かするならいい感じにロールを作ってやるよ」みたいな感じでロールを作ってくれます。
+
+S3へのPUTとGETが行える権限(s3:PutObject及びs3:GetObject)はついてくるのですが、PUTする際にACLを付与する権限(s3:PutObjectAcl)はついてきません。
+
+ですので、PUTする際にACLを指定する際は、ロールにs3:PutObjectAclを付与してあげる必要があります。
+
+## 感想
+
+明日から京都に向けて歩き始めるから早く寝ようと思っていたが結構遅くなりつつある。いかんいかん。
+
+以下のブログで実況中継しているので、皆さん応援してね！！
+
+[でこらいふろぐ http://dekolife.hatenablog.com/](http://dekolife.hatenablog.com/)
+
+応援してね！！応援してね！！！！
+
